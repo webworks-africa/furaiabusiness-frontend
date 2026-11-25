@@ -4,13 +4,11 @@ React and strict TypeScript business portal using Vite, React Router, Tailwind C
 
 ## Source version
 
-This complete **0.10.1** frontend combines the recovered 0.9 business portal with rebuilt document and supplier workflows. It includes onboarding, accounts, statements, contacts, quotations, invoices, checkout, payment options, OTP approvals, beneficiaries, cards, procurement, payroll, POS, lending preview, reports and permission-controlled developer tools.
+This complete **0.10.1** frontend includes onboarding, accounts, statements, contacts, quotations, invoices, checkout, payment options, OTP approvals, beneficiaries, cards, procurement, payroll, POS, lending preview, reports and permission-controlled developer tools.
 
 New document workflows include template-based PDF downloads and printing, simulated email delivery and retries, receipt exports, demo tax QR references, external supplier invoice uploads, extraction and mandatory review, payment terms and due payables. Settings and sign out are available from the profile menu; approvals and templates use the settings area.
 
-This is a reconstructed complete frontend, not a byte-identical recovery of the unavailable original 0.10 archive. Financial, identity, provider, email and tax workflows remain simulated. Live M-Pesa deposits, withdrawals, B2C Hakikisha, KRA connections and staging verification remain pending backend work. Customer and internal operations applications are deferred.
-
-See [the restoration and integration register](docs/RESTORATION_REGISTER.md) for implementation boundaries and executed checks.
+Financial, identity, provider, email and tax workflows remain simulated. Live M-Pesa deposits, withdrawals, B2C Hakikisha, KRA connections and staging verification remain pending backend work. Customer and internal operations applications are deferred.
 
 ## Requirements
 
@@ -59,7 +57,7 @@ npm run check:release
 set "VITE_API_MODE="
 ```
 
-Mock mode is blocked during production builds. Real mode calls the configured API and propagates failures rather than substituting fixtures. A successful build does not establish backend integration.
+Mock mode is blocked during production builds. Real mode calls the configured API and propagates failures rather than substituting fixtures.
 
 ## Configuration
 
@@ -77,9 +75,3 @@ Mock mode is blocked during production builds. Real mode calls the configured AP
 - future-phases/previous-platform: archived source for later application work. It is not part of the active build.
 
 See docs/PAGE_INVENTORY.md, docs/INTEGRATION_REGISTER.md, docs/MOCKS.md and docs/ROADMAP.md for detailed scope. Historical verification files describe their recorded runs; see docs/REPOSITORY_CHECKS.md for checks performed on this package.
-
-## GitHub upload
-
-Follow GITHUB_UPLOAD.md. Upload source files and the lockfile, including repository configuration files. Dependencies and build output are installed/generated locally and are excluded from the source archive.
-
-Required third-party license notices and generated contract headers are preserved. Archived documentation has received minor editorial changes; docs/PREVIOUS_SOURCE_MANIFEST.json records the original archive hashes rather than a new hash manifest for edited documentation.
