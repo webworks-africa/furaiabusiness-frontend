@@ -1,0 +1,96 @@
+import {
+  LayoutDashboard,
+  Landmark,
+  ReceiptText,
+  Send,
+  CreditCard,
+  Users,
+  FileText,
+  ClipboardList,
+  Link,
+  ChartNoAxesCombined,
+  Code,
+  ShieldCheck,
+  Settings,
+  Building2,
+  ShoppingBag,
+  Wallet,
+  Store,
+  BadgeDollarSign,
+} from "lucide-react";
+export const navigation = [
+  {
+    label: "Workspace",
+    items: [
+      { path: "/", label: "Overview", icon: LayoutDashboard, batch: "F1" },
+      { path: "/accounts", label: "Accounts", icon: Landmark, batch: "F2" },
+      {
+        path: "/transactions",
+        label: "Transactions",
+        icon: ReceiptText,
+        batch: "F2",
+      },
+      { path: "/payments", label: "Payments", icon: Send, batch: "F6" },
+      { path: "/send-money", label: "Send money", icon: Send, batch: "B2" },
+      { path: "/cards", label: "Cards", icon: CreditCard, batch: "F6" },
+    ],
+  },
+  {
+    label: "Business finance",
+    items: [
+      {
+        path: "/procurement",
+        label: "Procurement",
+        icon: ShoppingBag,
+        batch: "B2",
+      },
+      { path: "/payroll", label: "Payroll", icon: Wallet, batch: "B2" },
+      { path: "/pos", label: "POS", icon: Store, batch: "B2" },
+      {
+        path: "/loans",
+        label: "Loans · Preview",
+        icon: BadgeDollarSign,
+        batch: "B2",
+      },
+      { path: "/customers", label: "Customers", icon: Users, batch: "F4" },
+      {
+        path: "/quotations",
+        label: "Quotations",
+        icon: ClipboardList,
+        batch: "F4",
+      },
+      { path: "/invoices", label: "Invoices", icon: FileText, batch: "F4" },
+      {
+        path: "/payment-links",
+        label: "Payment Links",
+        icon: Link,
+        batch: "F5",
+      },
+      {
+        path: "/reports",
+        label: "Reports",
+        icon: ChartNoAxesCombined,
+        batch: "F7",
+      },
+    ],
+  },
+  {
+    label: "Platform",
+    items: [
+      { path: "/developers", label: "Developers", icon: Code, batch: "F7" },
+      {
+        path: "/team-and-approvals",
+        label: "Team & Approvals",
+        icon: ShieldCheck,
+        batch: "F3 / F6",
+      },
+      { path: "/settings", label: "Settings", icon: Settings, batch: "F3" },
+      {
+        path: "/onboarding",
+        label: "Business onboarding",
+        icon: Building2,
+        batch: "F3",
+      },
+    ],
+  },
+];

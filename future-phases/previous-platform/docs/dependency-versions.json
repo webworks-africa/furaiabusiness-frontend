@@ -1,0 +1,42 @@
+{
+  "verified_on": "2026-10-01",
+  "runtime": "Node 24.19.0; npm 11.9.0",
+  "dependencies": {
+    "@hookform/resolvers": "5.9.1",
+    "@radix-ui/react-slot": "1.3.3",
+    "@tanstack/react-query": "5.104.0",
+    "@tanstack/react-table": "8.21.3",
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
+    "lucide-react": "1.49.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-hook-form": "7.89.0",
+    "react-router-dom": "7.18.4",
+    "recharts": "3.10.1",
+    "tailwind-merge": "3.7.0",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.63.0",
+    "@tailwindcss/vite": "4.3.3",
+    "@testing-library/jest-dom": "7.0.1",
+    "@testing-library/react": "16.3.3",
+    "@testing-library/user-event": "14.6.7",
+    "@types/node": "26.6.3",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.1",
+    "eslint": "10.11.0",
+    "jsdom": "30.1.1",
+    "msw": "3.0.1",
+    "openapi-typescript": "7.13.0",
+    "tailwindcss": "4.3.3",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.71.0",
+    "vite": "8.3.1",
+    "vitest": "5.0.3"
+  },
+  "compatibility_evidence": "npm registry engines/peerDependencies checked; npm ls reports no invalid peers; typecheck/test/build evidence recorded separately"
+}

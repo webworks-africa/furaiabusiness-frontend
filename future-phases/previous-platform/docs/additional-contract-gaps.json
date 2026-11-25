@@ -1,0 +1,210 @@
+[
+  {
+    "page": "all",
+    "method": "POST",
+    "candidate_target_path": "{identity_prefix}/session/extensions",
+    "workflow": "Idle warning and safe extension",
+    "batch": "D1b",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "all",
+    "method": "POST",
+    "candidate_target_path": "{identity_prefix}/step-up/challenges",
+    "workflow": "MFA and sensitive-action step-up",
+    "batch": "D1b",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "all",
+    "method": "POST",
+    "candidate_target_path": "{identity_prefix}/uploads",
+    "workflow": "Evidence intent and validation",
+    "batch": "D3/D6",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "all",
+    "method": "GET",
+    "candidate_target_path": "{identity_prefix}/uploads/{id}",
+    "workflow": "Scan and quarantine status",
+    "batch": "D3/D6",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "all",
+    "method": "GET",
+    "candidate_target_path": "{identity_prefix}/uploads/{id}/content",
+    "workflow": "Authorized evidence read",
+    "batch": "D3/D6",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "all",
+    "method": "GET",
+    "candidate_target_path": "{identity_prefix}/exports/{id}",
+    "workflow": "Async export status",
+    "batch": "D2/D3/D8",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "all",
+    "method": "GET",
+    "candidate_target_path": "{identity_prefix}/exports/{id}/download",
+    "workflow": "Repeat download authorization",
+    "batch": "D2/D3/D8",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "O12",
+    "method": "POST",
+    "candidate_target_path": "/ops/v1/cases/{id}/executions",
+    "workflow": "Execute approved frozen case or controlled BLOCKED retry",
+    "batch": "D5",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "O12",
+    "method": "POST",
+    "candidate_target_path": "/ops/v1/cases/{id}/cancellations",
+    "workflow": "Cancel permitted proposed case",
+    "batch": "D5",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "O12",
+    "method": "POST",
+    "candidate_target_path": "/ops/v1/cases/{id}/evidence-requests",
+    "workflow": "Request further evidence",
+    "batch": "D5",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "O03",
+    "method": "POST",
+    "candidate_target_path": "/ops/v1/onboarding/{id}/assignments",
+    "workflow": "Reviewer assignment",
+    "batch": "D5",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "O07",
+    "method": "POST",
+    "candidate_target_path": "/ops/v1/operations/{id}/inquiries",
+    "workflow": "Provider evidence inquiry; no blind resend",
+    "batch": "D5",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "O21",
+    "method": "POST",
+    "candidate_target_path": "/ops/v1/alerts/{id}/delivery-retries",
+    "workflow": "Governed notification retry",
+    "batch": "D5",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "C01",
+    "method": "POST",
+    "candidate_target_path": "/v1/registrations/{id}/challenges",
+    "workflow": "Rate-limited challenge resend",
+    "batch": "D3",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "C09",
+    "method": "POST",
+    "candidate_target_path": "/v1/beneficiaries/{id}/verifications",
+    "workflow": "Destination validation",
+    "batch": "D4",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "C07",
+    "method": "GET",
+    "candidate_target_path": "/v1/operations/{id}/receipt",
+    "workflow": "Owned-resource receipt",
+    "batch": "D4",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "C16",
+    "method": "POST",
+    "candidate_target_path": "/v1/me/support-tickets/{id}/responses",
+    "workflow": "Customer-visible replies and evidence",
+    "batch": "D3",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "C18",
+    "method": "POST",
+    "candidate_target_path": "/v1/businesses/{id}/payment-cases/{case_id}/decisions",
+    "workflow": "Distinct business checker decision",
+    "batch": "D9",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "C18",
+    "method": "POST",
+    "candidate_target_path": "/v1/businesses/{id}/payment-cases/{case_id}/executions",
+    "workflow": "Recheck funds and gate",
+    "batch": "D9",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "P12",
+    "method": "POST",
+    "candidate_target_path": "/partner/v1/webhook-endpoints/{id}/verifications",
+    "workflow": "HTTPS challenge and destination checks",
+    "batch": "D7",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "P12",
+    "method": "POST",
+    "candidate_target_path": "/partner/v1/webhook-endpoints/{id}/signing-key-rotations",
+    "workflow": "One-time signing-secret rotation",
+    "batch": "D7",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "P11",
+    "method": "POST",
+    "candidate_target_path": "/partner/v1/sandbox/resets",
+    "workflow": "Own sandbox data reset only",
+    "batch": "D7",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "P19",
+    "method": "POST",
+    "candidate_target_path": "/partner/v1/invitations/{id}/acceptance",
+    "workflow": "Verified invitation acceptance",
+    "batch": "D7",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "P19",
+    "method": "POST",
+    "candidate_target_path": "/partner/v1/owner-transfer-requests",
+    "workflow": "Last-owner replacement procedure",
+    "batch": "D7",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "P22",
+    "method": "POST",
+    "candidate_target_path": "/partner/v1/support-tickets/{id}/responses",
+    "workflow": "Sanitized support reply",
+    "batch": "D8",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  },
+  {
+    "page": "P21",
+    "method": "POST",
+    "candidate_target_path": "/partner/v1/production-access-requests/{id}/responses",
+    "workflow": "Requested remediation",
+    "batch": "D8",
+    "status": "proposed extension; request/response schema requires review before implementation"
+  }
+]

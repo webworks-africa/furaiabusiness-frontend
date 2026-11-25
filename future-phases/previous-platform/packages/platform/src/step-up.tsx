@@ -1,0 +1,17 @@
+import {useEffect,useRef,useState} from 'react';
+import {useForm} from 'react-hook-form';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {z} from 'zod';
+import type {StepUpRequest,StepUpChallenge,StepUpGrant} from '../../contracts/src';
+import {Button} from '../../ui/src/button';
+import {useAuth} from './auth';
+import {ApiError} from '../../api/src/http';
+const schema=z.object({reason:z.string().trim().min(3,'Provide a reason for this action.').max(500),code:z.string().regex(/^\d{6}$/,'Enter the six-digit verification code.')});
+export function StepUpDialog({capability,resourceId,title,onCancel,onVerified}:{capability:StepUpRequest['capability'];resourceId:string;title:string;onCancel:()=>void;onVerified:(grant:StepUpGrant)=>Promise<void>}){
+ const {service}=useAuth(),dialog=useRef<HTMLDialogElement>(null),[challenge,setChallenge]=useState<StepUpChallenge|null>(null),[proof,setProof]=useState<StepUpGrant|null>(null),[error,setError]=useState(''),[waitUntil,setWaitUntil]=useState(0),[now,setNow]=useState(Date.now());
+ const {register,handleSubmit,formState:{errors,isSubmitting}}=useForm<z.infer<typeof schema>>({resolver:zodResolver(schema)});
+ useEffect(()=>{const element=dialog.current;const before=document.activeElement;if(element&&!element.open){if(typeof element.showModal==='function')element.showModal();else element.setAttribute('open','');}return ()=>{element?.close?.();if(before instanceof HTMLElement)before.focus();};},[]);
+ useEffect(()=>{const timer=setInterval(()=>setNow(Date.now()),1000);return ()=>clearInterval(timer);},[]);
+ const waiting=now<waitUntil;
+ return <dialog ref={dialog} className="step-up-dialog" aria-labelledby="step-up-title" onCancel={event=>{event.preventDefault();if(!isSubmitting)onCancel();}}><form onSubmit={handleSubmit(async input=>{setError('');try{let grant=proof;if(!grant){const active=challenge??await service.startStepUp({capability,resource_id:resourceId,reason:input.reason});setChallenge(active);grant=await service.verifyStepUp(active.id,input.code);setProof(grant);}await onVerified(grant);}catch(e){setError(e instanceof Error?e.message:'Verification unavailable.');if(e instanceof ApiError){if(e.status===429){setWaitUntil(Date.now()+Number(e.retryAfter??60)*1000);if(!proof)setChallenge(null);}if(['STEP_UP_EXPIRED','STEP_UP_REQUIRED','CHALLENGE_USED'].includes(e.body.error.code)){setChallenge(null);setProof(null);}}}})} noValidate><h2 id="step-up-title">{title}</h2><p>Confirm the reason and verify this action. Verification applies only to this resource and active context.</p>{(error||Object.keys(errors).length>0)&&<div role="alert" className="form-error">{error||'Check the highlighted fields.'}</div>}<label>Reason<input aria-label="Action reason" autoFocus readOnly={!!challenge||isSubmitting} {...register('reason')}/>{errors.reason&&<span className="field-error">{errors.reason.message}</span>}</label><label>Verification code<input aria-label="Step-up verification code" type="password" autoComplete="one-time-code" inputMode="numeric" {...register('code')}/>{errors.code&&<span className="field-error">{errors.code.message}</span>}</label>{waiting&&<p role="status">Try again in {Math.ceil((waitUntil-now)/1000)} seconds.</p>}<div className="dialog-actions"><Button type="button" variant="outline" disabled={isSubmitting} onClick={onCancel}>Cancel</Button><Button type="submit" disabled={isSubmitting||waiting}>{isSubmitting?'Verifying…':proof?'Retry action':'Verify and continue'}</Button></div></form></dialog>;
+}

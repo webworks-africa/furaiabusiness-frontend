@@ -1,0 +1,10 @@
+import '@testing-library/jest-dom/vitest';
+import {afterAll,afterEach,beforeAll,beforeEach} from 'vitest';
+import {cleanup} from '@testing-library/react';
+import {setupServer} from 'msw/node';
+import {handlers,resetMocks} from '../packages/mocks/src/handlers';
+export const server=setupServer(...handlers);
+beforeAll(()=>server.listen({onUnhandledFrame:'error'}));
+beforeEach(()=>resetMocks());
+afterEach(()=>{cleanup();server.resetHandlers();});
+afterAll(()=>server.close());

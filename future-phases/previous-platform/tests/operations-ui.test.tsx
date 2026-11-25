@@ -1,0 +1,15 @@
+import {it,expect} from 'vitest';
+import {render,screen} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {MemoryRouter} from 'react-router-dom';
+import {QueryClient,QueryClientProvider} from '@tanstack/react-query';
+import {http,HttpResponse} from 'msw';
+import {AuthProvider,useAuth} from '../packages/platform/src/auth';
+import {OperationsList} from '../packages/platform/src/operations';
+import {HttpClient} from '../packages/api/src/http';
+import {identityService} from '../packages/api/src/identity';
+import {server} from './setup';
+async function mount(){await identityService(new HttpClient('http://localhost'),'ops').login({identifier:'operator@staff.sandbox',challenge:'246810'});function Ready(){return useAuth().loading?null:<OperationsList kind="accounts"/>;}render(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false}}})}><AuthProvider surface="ops" baseUrl="http://localhost"><MemoryRouter><Ready/></MemoryRouter></AuthProvider></QueryClientProvider>);}
+it('shows loading then a genuine empty resource state',async()=>{let resolve!:()=>void;const blocked=new Promise<void>(r=>{resolve=r;});server.use(http.get('http://localhost/ops/v1/accounts',async()=>{await blocked;return HttpResponse.json({data:[],page:{as_of:'2026-10-01T08:00:00Z',next_cursor:null,has_more:false}});}));await mount();expect(await screen.findByRole('status',{name:'Loading workspace'})).toBeInTheDocument();expect(screen.queryByRole('table')).not.toBeInTheDocument();resolve();expect(await screen.findByRole('heading',{name:'No records are available'})).toBeInTheDocument();});
+it('shows dependency failure and retries the real list request',async()=>{let count=0;server.use(http.get('http://localhost/ops/v1/accounts',()=>{count++;return count===1?HttpResponse.json({error:{code:'DEPENDENCY_UNAVAILABLE',message:'Balance service unavailable',details:{}},request_id:'outage'},{status:503}):HttpResponse.json({data:[],page:{as_of:'2026-10-01T08:00:00Z',next_cursor:null,has_more:false}});}));await mount();expect(await screen.findByRole('alert')).toHaveTextContent('Balance service unavailable');expect(screen.queryByRole('table')).not.toBeInTheDocument();await userEvent.click(screen.getByRole('button',{name:'Try again'}));await screen.findByRole('heading',{name:'No records are available'});expect(count).toBe(2);});
+it('honors Retry-After instead of immediately inviting another rate-limited read',async()=>{server.use(http.get('http://localhost/ops/v1/accounts',()=>HttpResponse.json({error:{code:'RATE_LIMITED',message:'Slow down',details:{}},request_id:'rate'},{status:429,headers:{'Retry-After':'30'}})));await mount();await screen.findByText('Retry available in 30 seconds.');expect(screen.queryByRole('button',{name:'Try again'})).not.toBeInTheDocument();expect(screen.getByRole('button',{name:'Refresh records'})).toBeDisabled();expect(screen.getByRole('button',{name:'Apply filters'})).toBeDisabled();expect(screen.queryByRole('table')).not.toBeInTheDocument();});

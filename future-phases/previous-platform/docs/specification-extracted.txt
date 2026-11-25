@@ -1,0 +1,699 @@
+Furaia web dashboard development specification
+Operations console  Account holder portal  Partner developer platform
+Version 1.0  |  1 October 2026  |  Product and engineering specification
+This document defines the complete web dashboard scope for Furaia’s internal operations team, account holders, and partner organizations. It supplies page requirements, workflows, access controls, proposed API contracts, delivery batches, and acceptance evidence so frontend and backend teams can work in parallel.
+The Operations console is the main co-banking administration dashboard. Shared or joint customer accounts are not implied by that name. Joint accounts, shared pots, FX, cross-border transfers, rewards, credit, and automated advisory products require separate product specifications and are outside this dashboard release.
+The specification defines required behavior. It does not certify deployed infrastructure, legal approval, security review, or live-money readiness. Existing backend capabilities described by the project checkpoints must be mapped to actual repository routes and tested before a dashboard is connected to them.
+Document navigation
+1 Scope and delivery contract
+2 Shared experience and security
+3 Roles and permission model
+4 Operations console pages
+5 Account holder portal pages
+6 Partner developer platform pages
+7 End to end workflows
+8 Data and API contract
+9 Backend dependency register
+10 Verification and delivery
+11 Operational handover
+1 Scope and delivery contract
+Surface | Route namespace | Primary audience
+Operations | /ops | Authorized Furaia staff
+Account holder | /app | Individual and business customers
+Partner | /partners | Partner organization members
+Public developer docs | /developers | Prospective partners and developers
+Use three separately authorized application surfaces with a shared visual component library. Staff authority must never derive from a customer session or partner API key. Organization switching changes the active authorization scope and clears cached data from the prior scope. Sandbox and production are explicit environments with separate resources and credentials.
+Implementation status vocabulary
+Status | Meaning
+Reported foundation | Project checkpoint reports the capability; route, schema, grants and tests still require repository mapping.
+Required extension | A specific API, workflow or data projection must be implemented to serve this specification.
+Operational verification | The code must be exercised in the target environment and evidence retained.
+Outside release | An intentionally excluded product, not an unfinished page in this release.
+All endpoints in this document are target contracts unless explicitly described as a reported route. HTTP route names are not proof of implementation. During the first implementation batch, create a traceability file linking each page ID to actual routes, authorization services, response schemas and automated tests. Resolve route differences through explicit mappings, not duplicate money-processing implementations.
+Product defaults
+Initial customer money views are KES only. Currency-aware formatting and selectors must support later registry additions without inventing multi-currency balances.
+Money is processed and represented in integer minor units. The browser submits decimal-free amount_minor strings; formatting never controls accounting.
+Customer account opening uses approved product and legal-entity policy. Partner access is sandbox by default and production activation requires a reviewed application.
+Business account holders use organization membership and maker-checker policies for supported payment products. Business workflows are required extensions, not a claim that existing staff maker-checker automatically covers customers.
+No interface can edit posted journals, manually overwrite balances, fabricate KYC approval, or treat UNKNOWN provider outcomes as failed payouts.
+2 Shared experience and security
+Visual system
+Use restrained typography, clear table density, neutral backgrounds, strong text contrast and one Furaia accent color taken from the approved brand assets. No decorative imagery, gradient cards, glass effects, emoji navigation, animated counters or invented analytics. Use a licensed icon library with consistent stroke weight. Banking amounts use tabular numerals; IDs have copy controls and truncated display with full accessible values.
+Desktop layout uses a persistent grouped sidebar, top bar with environment and scope, breadcrumbs, a page title and contextual actions. Account-holder pages collapse to a mobile navigation with Overview, Accounts, Payments, Activity and Profile. Staff and partner tables use horizontal scrolling on narrow screens with pinned identifier columns; do not compress financial columns into unreadable text.
+Reusable interaction rules
+Each list uses server-side filters, opaque cursor pagination, saved filter state in the URL and a stable sort. A filter change resets the cursor. Default page size 25; server maximum 100.
+Each detail page displays resource status, legal entity or organization where applicable, creation/update times and the latest data timestamp. Amounts display currency explicitly.
+Forms display inline field errors and an accessible summary. Required evidence uploads accept PDF, JPEG and PNG up to 10 MiB per file; the server verifies type, scans content and quarantines before review.
+Every money submission has a server preview or authoritative quote, a confirmation step and a persisted client idempotency key. Double-click, browser retry and network retry reuse that key with the identical payload.
+Refreshes must not replace a form the user is editing. Changed server versions require a review conflict state. Decisions and edits submit an expected_version.
+Exports are asynchronous jobs, scoped to the requesting identity, with authorization checked on request and download. Show queued, running, ready, failed and expired states. Default link lifetime 15 minutes; never attach bearer credentials to URLs.
+Display Africa/Nairobi by default with an explicit timezone label. Statement dates retain the provider and legal-entity calendar; API instants use UTC ISO 8601.
+All content supports keyboard navigation, visible focus, accessible names, error announcements, 200 percent zoom and reduced motion. Target WCAG 2.2 AA as an acceptance requirement.
+Global states
+State | Required response
+Loading | Skeleton of the actual layout; never show zero balance as a loading substitute.
+Empty | Explain that no records exist and show the permitted next action.
+No results | Keep applied filters visible and offer reset filters.
+401 or session expired | Reauthenticate; preserve a non-sensitive return path and check operation status before offering a money retry.
+403 | Explain permission is missing; do not expose the restricted record or offer a bypass.
+Dependency unavailable | Show last successful data timestamp if available; label cached data stale and disable affected new submissions.
+Money gate disabled | Keep reads, status inquiry and exact successful replays available; show whether disabled by policy or unavailable.
+UNKNOWN operation | Show pending investigation, held amount and last provider evidence; never invite a second payment.
+Critical reconciliation break | Staff banner identifies scope and incident reference, affected controls and permitted investigation steps.
+Validation or version conflict | Retain entered values; show actionable field errors or require refreshed review before resubmission.
+Authentication and session design
+Use server-managed browser sessions or a backend-for-frontend with HttpOnly Secure cookies and CSRF protection. Staff federation resolves the approved staff principal and checks domain permissions on every action. Partner human login is separate from machine API credentials. Never store access tokens, API secrets or KYC evidence in localStorage, analytics events or browser error reports. Clear sensitive query caches on logout, scope switch and authorization loss.
+Staff and partner sessions require MFA, with stronger step-up for credentials, approval and access changes. Proposed defaults: staff idle timeout 15 minutes and absolute duration 8 hours; customer and partner idle timeout 30 minutes and absolute duration 12 hours. Server policy is authoritative. Session expiry warnings provide a safe extension flow without granting additional permissions. Customer production authentication must replace sandbox-only credentials before public customer use.
+Sensitive reveal requires scoped authorization, a reason and an audit record. Mask national IDs, contacts, addresses and beneficiary identifiers by default. Logs contain request IDs and sanitized metadata, never credentials, full identity documents or raw authorization headers. Browser code cannot decide authorization from role labels alone.
+3 Roles and permission model
+Role | Permitted responsibility | Restrictions
+Staff Operator | Investigate scoped records and propose governed actions | Cannot approve own proposal or grant personal authority.
+Staff Reviewer | Review evidence and request further information | Review permissions do not imply financial approval.
+Staff Approver | Decide authorized maker-checker cases | Must be distinct from maker and excluded prior actors.
+Staff Auditor | Read scoped events and approved exports | No money or policy mutations.
+Staff Administrator | Manage authorized staff/access proposals | No automatic financial override or universal tenant access.
+Customer Owner | Manage own identity and individual accounts | No staff or partner authority.
+Business Owner | Manage business membership and authorized products | Payment approval duties depend on product policy.
+Business Maker and Approver | Propose or approve scoped business payments | Distinct identities required where dual control applies.
+Partner Owner | Manage organization and production-access application | Cannot self-approve production or expanded scopes.
+Partner Administrator | Manage permitted apps, team and configuration | Role elevation and sensitive changes follow policy.
+Partner Developer | Read docs and manage authorized sandbox integrations | Production secret access requires explicit grant.
+Partner Finance | Read permitted transactions, reports and billing | No credential management by default.
+Partner Viewer | Read assigned summaries | No writes or secret reveal.
+Permission checks include principal, action, resource, tenant, legal entity, partner organization and environment. UI visibility follows returned capabilities; the server repeats enforcement inside the domain. Existence checks must not leak cross-tenant records. All privileged actions require reasons and evidence according to their registered case kind. Disabling or hiding a button is not authorization.
+Capability names
+Staff capabilities: customers.view, pii.reveal, kyc.review, accounts.view, operations.view, holds.view, ledger.view, reconciliation.view, reconciliation.resolve.propose, adjustments.propose, cases.approve, cases.reject, reports.export, audit.view, staff.access.propose, partners.review, policies.propose and governance.view. Customer capabilities: profile.manage, kyc.submit, accounts.open, balances.view, transfers.create, payouts.create, collections.create, statements.export and disputes.create. Partner capabilities: organization.manage, applications.manage, credentials.issue, credentials.rotate, credentials.revoke, webhooks.manage, logs.view, usage.view, finance.view, team.manage and production_access.submit. Map these proposed identifiers to the existing authorization registry before implementation.
+4 Operations console pages
+Each page inherits the shared authentication, accessibility, data freshness, error, pagination and export rules in Section 2. The contracts below are proposed targets; implementation must map them to actual services and schemas. Actions are visible only when server-provided capabilities permit them.
+O01 Overview
+Route: /ops. Purpose: Live operational position by legal entity and currency.
+Content. Outstanding operations by state, UNKNOWN count, hold exposure, latest reconciliation run, break count, gate state, outbox lag, alert delivery state
+Filters. Legal entity; date; provider; currency
+Actions. Open filtered queues and incident detail; acknowledge an alert only when granted
+API dependency. GET /ops/v1/overview
+Acceptance. Aggregates reconcile to their source lists; freshness is visible; incompatible currencies are not summed.
+O02 Customers
+Route: /ops/customers. Purpose: Search and review customers within granted scopes.
+Content. Customer ID, masked name/contact, tenant, state, risk tier, account count, last activity; detail includes KYC history, consents and linked records
+Filters. ID; masked contact search; state; tier; tenant
+Actions. Open detail, request authorized PII reveal, propose suspension or KYC review; never directly mark VERIFIED
+API dependency. GET /ops/v1/customers; GET /ops/v1/customers/{id}
+Acceptance. A cross-tenant search returns no restricted rows; reveals are audited; linked account access is independently authorized.
+O03 Onboarding reviews
+Route: /ops/onboarding. Purpose: Review submitted customer or business evidence.
+Content. Application, applicant type, submitted evidence, scan status, outstanding requirements, reviewer history, policy version
+Filters. State; age; assigned reviewer; applicant type
+Actions. Assign review, request evidence, propose verification or rejection via registered workflow
+API dependency. GET /ops/v1/onboarding; POST /ops/v1/onboarding/{id}/review-requests
+Acceptance. Quarantined evidence cannot be opened; review history persists; reviewer cannot bypass final decision authority.
+O04 Accounts
+Route: /ops/accounts. Purpose: Inspect account lifecycle and ownership.
+Content. Account ID, owner, product, currency, legal entity, state, posted/held/available balance, policy version
+Filters. Owner; product; state; currency; entity
+Actions. Open detail; propose suspension, closure or limit change where policy permits
+API dependency. GET /ops/v1/accounts; GET /ops/v1/accounts/{id}
+Acceptance. Balance labels match backend semantics; account closure with funds or active obligations is refused by server.
+O05 Transactions
+Route: /ops/operations. Purpose: Investigate transfer, collection and payout outcomes.
+Content. Operation ID, kind, amount, fee, currency, status, business reference, provider reference, timestamps, request/correlation IDs
+Filters. Kind; state; time; account; provider reference
+Actions. Open timeline, related journals, holds, callbacks and evidence; authorized inquiry request
+API dependency. GET /ops/v1/operations; GET /ops/v1/operations/{id}
+Acceptance. UNKNOWN remains distinct from failure; provider evidence never authorizes a duplicate submission from the UI.
+O06 Collections
+Route: /ops/collections. Purpose: Monitor incoming collection instructions and receipts.
+Content. Instruction, payer reference masked, expected/received amount, fee, receipt evidence, state and linked journal
+Filters. Provider; state; date; unmatched receipt
+Actions. View receipt and inbound evidence; open associated reconciliation exception
+API dependency. GET /ops/v1/collections; GET /ops/v1/collections/{id}
+Acceptance. Duplicate receipt shows one financial effect; unmatched receipts link to the exception workflow.
+O07 Payouts
+Route: /ops/payouts. Purpose: Monitor outgoing instructions and settlement.
+Content. Destination masked, held amount, provider state, instruction ID, attempts, inquiry evidence and settlement due date
+Filters. Provider; state; ageing; date
+Actions. View instruction and inquiry timeline; open investigation; no blind resend
+API dependency. GET /ops/v1/payouts; GET /ops/v1/payouts/{id}
+Acceptance. Accepted timeout displays UNKNOWN and preserves hold; confirmed failure evidence is required for release.
+O08 Holds
+Route: /ops/holds. Purpose: Inspect reserved funds and lifecycle.
+Content. Hold ID, account, operation, amount, creation/expiry times, lifecycle state, uncertainty reason, capture/release journal
+Filters. State; expiry; account; operation
+Actions. View evidence and lifecycle; propose any permitted exceptional action
+API dependency. GET /ops/v1/holds; GET /ops/v1/holds/{id}
+Acceptance. UNKNOWN-aware expiry is explained; terminal transitions cannot be forced in the browser.
+O09 Ledger and journals
+Route: /ops/ledger. Purpose: Read immutable accounting evidence.
+Content. Journal ID, posting time, template, reference kind/ID, legal entity, currency and balanced debit/credit lines
+Filters. Journal; account; reference; template; period
+Actions. View linked operation/case; authorized filtered export
+API dependency. GET /ops/v1/journals; GET /ops/v1/journals/{id}
+Acceptance. PT-15 journals link to the maker-checker case; no edit or delete affordance exists; line totals balance.
+O10 Reconciliation runs
+Route: /ops/reconciliation. Purpose: Inspect ingestion and matching results.
+Content. Provider, entity, currency, statement date/digest, run state, counts, equation components, alert threshold decision
+Filters. Date; provider; state; entity
+Actions. View observations/matches; open exceptions and amendment history; authorized ingestion request
+API dependency. GET /ops/v1/reconciliation/runs; GET /ops/v1/reconciliation/runs/{id}
+Acceptance. Re-ingestion identity and amended-file exceptions are visible; prior completed runs are not overwritten.
+O11 Reconciliation exceptions
+Route: /ops/reconciliation/exceptions. Purpose: Investigate financial breaks with evidence.
+Content. Exception ID, type, expected/observed amount, difference, references, age, severity, owner and resolution case
+Filters. Type; severity; state; age; assignee
+Actions. Assign investigation, attach evidence, propose resolution; financial correction requires a separate adjustment case
+API dependency. GET /ops/v1/reconciliation/exceptions; POST /ops/v1/cases
+Acceptance. Resolution does not silently post money; approved closure records evidence and the linked journal if a separate adjustment occurred.
+O12 Approvals
+Route: /ops/approvals. Purpose: Decide governed privileged changes.
+Content. Case kind, maker, payload digest, evidence, scope, financial impact, expiry, version, decision and execution state
+Filters. Kind; state; scope; maker; execution state
+Actions. Approve, reject, request evidence, cancel where permitted; execution follows registered kind
+API dependency. GET /ops/v1/cases; POST /ops/v1/cases/{id}/decisions
+Acceptance. Own-case approval is denied server-side; concurrent decisions have one winner; BLOCKED is shown as retryable separately from approval.
+O13 Manual adjustments
+Route: /ops/adjustments. Purpose: Propose approved PT-15 corrections.
+Content. Approved template, permitted source/destination, currency, amount, reason code, narrative, evidence and preview lines
+Filters. Template; case state; reason; entity
+Actions. Preview and propose; distinct approver decides; executor posts through ledger gateway
+API dependency. GET /ops/v1/adjustment-templates; POST /ops/v1/adjustments/preview; POST /ops/v1/cases
+Acceptance. Cannot choose arbitrary accounts outside template policy; furaia_app execution posts balanced journal with reference to case; gate denial creates no journal.
+O14 Disputes
+Route: /ops/disputes. Purpose: Track customer-reported transaction problems.
+Content. Dispute ID, operation, complainant, category, evidence, assignee, response due date, case history
+Filters. State; category; overdue; owner
+Actions. Assign, request evidence, record outcome; propose correction separately
+API dependency. GET /ops/v1/disputes; POST /ops/v1/disputes/{id}/responses
+Acceptance. Dispute closure does not mutate a posted journal; customer sees only customer-visible notes.
+O15 Partners
+Route: /ops/partners. Purpose: Review partner organizations and production access.
+Content. Organization, application state, verified business evidence, requested scopes, readiness checks, active apps and environment
+Filters. State; organization; requested product; review age
+Actions. Request evidence, approve/reject scoped access through governance, suspend credentials under controlled policy
+API dependency. GET /ops/v1/partners; GET /ops/v1/partners/{id}; POST /ops/v1/cases
+Acceptance. Applicant cannot activate own production; approval is bound to environment, app and reviewed scope set.
+O16 Products and limits
+Route: /ops/products. Purpose: Inspect and propose versioned account policy.
+Content. Product code/version, entity, eligibility, currency, fees, tier limits, effective dates, active accounts
+Filters. Entity; product; effective state
+Actions. View policy differences and impact; propose version change through maker-checker
+API dependency. GET /ops/v1/products; GET /ops/v1/policies; POST /ops/v1/cases
+Acceptance. Existing accounts retain their effective policy until a controlled migration; previewed changes show affected scope.
+O17 Reports and daily close
+Route: /ops/reports. Purpose: Produce scoped operational and accounting reports.
+Content. Close date/state, totals per currency, unresolved breaks, outstanding holds, UNKNOWN ageing, report version and data watermark
+Filters. Report type; date; entity; currency
+Actions. Generate/download authorized reports; request daily-close assessment
+API dependency. GET /ops/v1/reports; POST /ops/v1/exports; GET /ops/v1/daily-close
+Acceptance. Close blockers are explicit; report is reproducible from its snapshot; no UI click labels an unresolved day reconciled.
+O18 Audit trail
+Route: /ops/audit. Purpose: Explore immutable events and integrity evidence.
+Content. Timestamp, actor, action, resource, outcome, request/correlation IDs, event digest and verification result
+Filters. Actor; action; resource; outcome; time
+Actions. View sanitized metadata; authorized export; request integrity verification
+API dependency. GET /ops/v1/audit-events; GET /ops/v1/audit-verifications
+Acceptance. Integrity status distinguishes verified, failed and not checked; absence of an audit row for a rolled-back transaction is not fabricated.
+O19 Staff and access
+Route: /ops/staff. Purpose: Inspect staff membership and governed grants.
+Content. Staff principal, active identity binding, roles, tenant/entity grants, MFA state, access expiry and history
+Filters. Role; state; scope; expiry
+Actions. Propose provisioning, grants, revocation; show access preview and separation duties
+API dependency. GET /ops/v1/staff; GET /ops/v1/role-matrix; POST /ops/v1/cases
+Acceptance. No self-elevation; disabled staff cannot reuse sessions; external SSO groups alone do not authorize money.
+O20 Integrations
+Route: /ops/integrations. Purpose: Inspect rail and KYC adapter readiness.
+Content. Provider, capability manifest version, credential reference, certification state, callbacks health, statement lag
+Filters. Provider; environment; health
+Actions. View certification evidence; propose configuration or key rotation; no secret display
+API dependency. GET /ops/v1/integrations; GET /ops/v1/integrations/{id}
+Acceptance. Fake and certified adapters are unmistakable; secrets are represented by references only.
+O21 Alerts and delivery
+Route: /ops/alerts. Purpose: Investigate governance and platform alarms.
+Content. Alert type, scope, threshold/window, first/last occurrence, delivery attempts, SNS message reference and recovery
+Filters. State; severity; type; environment
+Actions. View evidence, acknowledge if granted, open incident; delivery retry only if authorized
+API dependency. GET /ops/v1/alerts; POST /ops/v1/alerts/{id}/acknowledgements
+Acceptance. Delivery acceptance is not labeled email receipt; repeated alarms deduplicate and recovery history remains.
+O22 Settings and governance
+Route: /ops/settings. Purpose: Inspect environment and controlled runtime policy.
+Content. Environment, deployed version, gate state/age, last validation, feature policy version, currency registry and notification preferences
+Filters. Environment; policy kind
+Actions. Edit personal notification preferences; link to controlled flag deployment and key rotation procedures
+API dependency. GET /ops/v1/governance; GET /ops/v1/settings; PATCH /ops/v1/me/preferences
+Acceptance. Production-impacting changes do not bypass external two-person deployment approval; stale true is never shown as permission to write.
+5 Account holder portal pages
+Each page inherits the shared authentication, accessibility, data freshness, error, pagination and export rules in Section 2. The contracts below are proposed targets; implementation must map them to actual services and schemas. Actions are visible only when server-provided capabilities permit them.
+C01 Registration
+Route: /app/register. Purpose: Create a customer identity and accept applicable terms.
+Content. Email or phone, verification channel, country, applicant type, terms/privacy versions and consent timestamps
+Filters. Not applicable
+Actions. Register, verify contact, resume verification; do not open a financial account automatically
+API dependency. POST /v1/registrations; POST /v1/registrations/{id}/verify
+Acceptance. Contact challenge is rate-limited; duplicate registration does not enumerate other users.
+C02 Sign in and recovery
+Route: /app/login. Purpose: Authenticate account holder and recover access.
+Content. Identifier, authentication challenge, MFA when required, recovery case reference
+Filters. Not applicable
+Actions. Sign in, recover access, revoke lost-device sessions after verified recovery
+API dependency. POST /v1/sessions; POST /v1/recovery-requests
+Acceptance. Recovery cannot bypass identity proof or reveal account existence; sessions are invalidated according to policy.
+C03 Identity verification
+Route: /app/verification. Purpose: Submit and track personal or business verification.
+Content. Legal name, birth date for individuals, residency, document type/number masked, address, evidence and outstanding checks
+Filters. Applicant type; application state
+Actions. Save draft, upload evidence, submit, respond to review request
+API dependency. GET /v1/me/verification; POST /v1/me/verification/submissions
+Acceptance. Required fields follow server jurisdiction/product policy; user cannot submit VERIFIED as a state.
+C04 Account opening
+Route: /app/accounts/open. Purpose: Open an eligible account using product policy.
+Content. Eligible products, entity disclosure, KES currency, terms, eligibility, fee/limit summary and policy version
+Filters. Applicant type; eligible product
+Actions. Select product, accept terms, submit idempotent account-opening request
+API dependency. GET /v1/products/eligible; POST /v1/accounts
+Acceptance. Unverified or suspended customers are rejected; duplicate opening request returns the same account; opening balance is zero.
+C05 Overview
+Route: /app. Purpose: Show own accounts and recent activity.
+Content. Available/held/posted totals per currency, account tiles, pending verification, recent operations, required actions
+Filters. Active customer/business context
+Actions. Open account, transfer, statement, verification or support
+API dependency. GET /v1/me; GET /v1/me/overview
+Acceptance. Only owned or granted accounts are included; multi-currency amounts are never blended.
+C06 Accounts and balances
+Route: /app/accounts. Purpose: Inspect own account details and product terms.
+Content. Account identifier, product, currency, status, available/held/posted amounts, limits and as-of timestamp
+Filters. State; product
+Actions. Open account detail and account-filtered activity; request closure through policy workflow
+API dependency. GET /v1/accounts; GET /v1/accounts/{id}; POST /v1/accounts/{id}/closure-requests
+Acceptance. Manipulated account ID cannot expose another principal; closure eligibility is enforced on server.
+C07 Activity and transaction detail
+Route: /app/activity. Purpose: Track operation outcomes and receipts.
+Content. Kind, amount, fee, status, source/destination masked, references, timeline and provider evidence summary
+Filters. Account; date; kind; status
+Actions. View receipt, copy safe reference, open dispute and download permitted receipt
+API dependency. GET /v1/operations; GET /v1/operations/{id}
+Acceptance. Accepted is not labeled completed; exact replay restores the original operation; internal audit and staff notes are absent.
+C08 Internal transfer
+Route: /app/payments/transfer. Purpose: Move funds between authorized accounts.
+Content. Source, recipient identifier/name confirmation, amount, fee, reference, available funds, limit check and preview expiry
+Filters. Source account; saved recipient
+Actions. Preview, confirm, submit with idempotency key, view resulting operation
+API dependency. POST /v1/transfers/internal/preview; POST /v1/transfers/internal
+Acceptance. Server validates ownership and recipient policy; insufficient funds, changed-body conflict and gate-disabled cases preserve safe retry.
+C09 Beneficiaries
+Route: /app/beneficiaries. Purpose: Manage permitted payment destinations.
+Content. Display name, destination kind, masked details, validation state, created/updated times
+Filters. Kind; name; active state
+Actions. Add, verify, edit non-financial label, archive; sensitive destination changes require revalidation
+API dependency. GET /v1/beneficiaries; POST /v1/beneficiaries; PATCH /v1/beneficiaries/{id}
+Acceptance. No beneficiary ownership leakage; destination validation results expire under policy; archived records remain in historical receipts.
+C10 Add money and collections
+Route: /app/payments/collect. Purpose: Create supported collection instruction.
+Content. Target account, amount, permitted rail, payer details masked, expiry, reference and charges
+Filters. Target account; permitted rail
+Actions. Preview/create collection, show provider instructions, track pending receipt
+API dependency. POST /v1/collections/preview; POST /v1/collections
+Acceptance. Do not mark account credited before confirmed receipt and posting; instruction is labeled sandbox where fake rail is active.
+C11 Payouts
+Route: /app/payments/payout. Purpose: Send funds through an approved outbound rail.
+Content. Source, validated beneficiary, amount, fees, total reservation, estimated timing, limit check and provider
+Filters. Source; beneficiary; rail
+Actions. Preview, confirm, submit, track status and held funds
+API dependency. POST /v1/payouts/preview; POST /v1/payouts
+Acceptance. UNKNOWN locks retry guidance to status inquiry; no release or resend button; state changes follow provider evidence.
+C12 Statements and documents
+Route: /app/statements. Purpose: Obtain account history and product documents.
+Content. Account, inclusive date range, opening/closing posted balance, fees, entries, export state and document version
+Filters. Account; date; format PDF or CSV
+Actions. Generate statement, download scoped export, read account terms
+API dependency. GET /v1/accounts/{id}/statements; POST /v1/exports
+Acceptance. Statement balance is posted balance and holds are separately explained; export download authorization is checked.
+C13 Profile and consents
+Route: /app/profile. Purpose: Maintain contact information and consent records.
+Content. Masked identity, contact verification state, address-change request, communication preferences and consent history
+Filters. Not applicable
+Actions. Update contact through challenge, request material identity change, manage optional consent
+API dependency. GET /v1/me; PATCH /v1/me/preferences; POST /v1/me/profile-change-requests
+Acceptance. Mandatory processing notices are separate from optional marketing; identity changes do not silently erase KYC evidence.
+C14 Security and devices
+Route: /app/security. Purpose: Manage own authentication and active sessions.
+Content. MFA enrollment state, device/session list, sign-in history and recovery methods
+Filters. Active sessions; date
+Actions. Enroll/recover MFA, revoke session, change authentication secret with step-up
+API dependency. GET /v1/me/sessions; DELETE /v1/me/sessions/{id}; POST /v1/me/mfa/enrollments
+Acceptance. Current and other-session revocation are explicit; secrets and recovery codes display once and never enter telemetry.
+C15 Notifications
+Route: /app/notifications. Purpose: Read customer-visible status updates.
+Content. Category, operation/support reference, timestamp, read state and delivery preference
+Filters. Unread; category; date
+Actions. Mark read, open linked owned resource, change optional preferences
+API dependency. GET /v1/me/notifications; PATCH /v1/me/notifications/{id}
+Acceptance. A deep link repeats resource authorization; notifications never reveal complete beneficiary or identity data.
+C16 Support and disputes
+Route: /app/support. Purpose: Raise questions and dispute a specific operation.
+Content. Ticket category, operation reference, narrative, scanned evidence, state and customer-visible responses
+Filters. State; category
+Actions. Create ticket/dispute, reply, submit evidence, view progress
+API dependency. GET /v1/me/support-tickets; POST /v1/disputes; POST /v1/me/support-tickets
+Acceptance. Duplicate disputes are linked; staff-only notes remain hidden; submission never triggers an automatic reversal.
+C17 Business organization and team
+Route: /app/business/team. Purpose: Manage scoped business membership.
+Content. Business profile, verified status, members, invitations, roles, account grants and permission preview
+Filters. Member state; role; account
+Actions. Invite/revoke member and propose sensitive role changes under organization policy
+API dependency. GET /v1/businesses/{id}/members; POST /v1/businesses/{id}/invitations
+Acceptance. Only granted businesses appear; owner cannot remove the last authorized owner without a replacement procedure.
+C18 Business payment approvals
+Route: /app/business/approvals. Purpose: Apply customer organization dual control to payments.
+Content. Proposal, maker, amount/fee, beneficiary version, expiry, policy version, approver and execution outcome
+Filters. State; amount; account; maker
+Actions. Propose, approve/reject/cancel, request refreshed preview on expiry
+API dependency. GET /v1/businesses/{id}/payment-cases; POST /v1/businesses/{id}/payment-cases
+Acceptance. Maker cannot approve own payment; frozen amount and beneficiary cannot change after approval; funds and gate are checked at execution.
+6 Partner developer platform pages
+Each page inherits the shared authentication, accessibility, data freshness, error, pagination and export rules in Section 2. The contracts below are proposed targets; implementation must map them to actual services and schemas. Actions are visible only when server-provided capabilities permit them.
+P01 Partner registration
+Route: /partners/register. Purpose: Start self-service partner onboarding.
+Content. Business email, name, country, password or federated sign-in, terms/privacy acceptance
+Filters. Not applicable
+Actions. Register, verify contact and enter organization setup
+API dependency. POST /partner/v1/registrations; POST /partner/v1/registrations/{id}/verify
+Acceptance. No production credential is issued; automated abuse controls and duplicate-safe registration apply.
+P02 Partner login and recovery
+Route: /partners/login. Purpose: Authenticate a human partner member.
+Content. Login identifier, MFA, recovery status and organization memberships
+Filters. Not applicable
+Actions. Sign in, recover with evidence, select authorized organization
+API dependency. POST /partner/v1/sessions; POST /partner/v1/recovery-requests
+Acceptance. Human session is not usable as a machine API key; organization switching clears prior data.
+P03 Organization setup
+Route: /partners/onboarding/organization. Purpose: Create an organization and describe intended integration.
+Content. Legal/trading names, registration country/number, business type, website, address, contact, expected products/volumes
+Filters. Not applicable
+Actions. Save draft and submit business verification application
+API dependency. POST /partner/v1/organizations; PATCH /partner/v1/organizations/{id}
+Acceptance. Organization is unique under verified registration identity; owner membership is transactional with organization creation.
+P04 Business verification
+Route: /partners/onboarding/verification. Purpose: Submit required KYB and authorized-person evidence.
+Content. Registration documents, ownership/director evidence, authorized representative, business model, source/use of funds and review requests
+Filters. Requirement state
+Actions. Upload scanned evidence, save draft, submit and answer reviewer requests
+API dependency. GET /partner/v1/organizations/{id}/verification; POST /partner/v1/organizations/{id}/verification/submissions
+Acceptance. Evidence checklist is server-policy-driven; personal owner data is restricted to designated roles.
+P05 Application status
+Route: /partners/onboarding/status. Purpose: Explain onboarding decision and next steps.
+Content. Submitted time, state, missing evidence, reviewer requests, sandbox entitlement and decision summary
+Filters. Application version
+Actions. Respond, withdraw before decision where allowed, request review under policy
+API dependency. GET /partner/v1/organizations/{id}/onboarding
+Acceptance. Status separates contact verified, KYB approved, sandbox active and production approved.
+P06 Partner overview
+Route: /partners. Purpose: Show scoped integration and operational health.
+Content. Environment, active apps, traffic/errors, quota usage, webhook failures, pending access request and permitted financial summaries
+Filters. Environment; app; period
+Actions. Open diagnostics, credentials, docs or production checklist
+API dependency. GET /partner/v1/overview
+Acceptance. Production metrics never appear in sandbox scope; financial totals require finance permission.
+P07 Applications
+Route: /partners/applications. Purpose: Define each integration with independent permissions.
+Content. Application name, purpose, callback origins, environment, requested/granted scopes, status and owner
+Filters. Environment; state
+Actions. Create/edit sandbox app, request production counterpart, archive after dependencies resolved
+API dependency. GET /partner/v1/applications; POST /partner/v1/applications; PATCH /partner/v1/applications/{id}
+Acceptance. Approved scope expansion requires review; archive does not delete transaction evidence.
+P08 API credentials
+Route: /partners/credentials. Purpose: Issue and control machine credentials.
+Content. Credential ID/prefix, app, environment, granted scopes, created/expiry times, last use and revocation state
+Filters. Application; environment; state
+Actions. Issue scoped key, show secret once, rotate with bounded overlap, revoke with step-up
+API dependency. GET /partner/v1/credentials; POST /partner/v1/credentials; POST /partner/v1/credentials/{id}/rotations; DELETE /partner/v1/credentials/{id}
+Acceptance. Secrets are stored as hashes where verification permits; private signing material is KMS-managed if asymmetric; revoked keys fail immediately under published propagation bound.
+P09 API documentation
+Route: /developers/api. Purpose: Publish accurate versioned integration contracts.
+Content. Environment base URLs, endpoint groups, auth/scopes, schemas, examples, errors, pagination, idempotency and lifecycle states
+Filters. API version; product; search
+Actions. Read, download OpenAPI, copy examples, follow migration guide
+API dependency. GET /developers/openapi/{version}; GET /developers/changelog
+Acceptance. Docs are generated from reviewed contract; unsupported operations are excluded or explicitly future; no real secret in examples.
+P10 Integration guides
+Route: /developers/guides. Purpose: Explain complete partner implementation journeys.
+Content. Quickstart, authentication, account ownership, money submission, callbacks, reconciliation, limits and recovery
+Filters. Language; product; guide
+Actions. Follow reproducible sandbox steps in PHP, JavaScript and curl examples
+API dependency. Static versioned guides plus reviewed OpenAPI examples
+Acceptance. Examples execute against simulator fixtures; guide explains ACCEPTED and UNKNOWN without unsafe retry advice.
+P11 Sandbox testing
+Route: /partners/sandbox. Purpose: Exercise deterministic integration scenarios.
+Content. App, synthetic identities/accounts, scenario catalog, test result, operation ID and readiness checklist
+Filters. Scenario; app; run state
+Actions. Seed isolated test resources, trigger permitted fake scenarios, reset own synthetic dataset
+API dependency. POST /partner/v1/sandbox/runs; GET /partner/v1/sandbox/runs/{id}
+Acceptance. Reset cannot reach production; scenario tests cover success, reject, timeout, duplicates and reordered callbacks.
+P12 Webhook endpoints
+Route: /partners/webhooks. Purpose: Configure partner notification destinations.
+Content. HTTPS URL, subscribed event types, environment, signing key version, endpoint state and last delivery
+Filters. Environment; app; state
+Actions. Create, challenge verify, edit subscriptions, rotate signing secret, disable
+API dependency. GET /partner/v1/webhook-endpoints; POST /partner/v1/webhook-endpoints; PATCH /partner/v1/webhook-endpoints/{id}
+Acceptance. Server rejects private/link-local/metadata targets and rechecks resolved destinations on send; signing secrets show once.
+P13 Webhook deliveries
+Route: /partners/webhooks/deliveries. Purpose: Investigate delivery and controlled replay.
+Content. Event ID, type/version, endpoint, attempts, response code, latency, next retry, terminal state and sanitized payload
+Filters. Event; endpoint; state; period
+Actions. View attempts and request replay of same event with audit
+API dependency. GET /partner/v1/webhook-deliveries; POST /partner/v1/webhook-deliveries/{id}/replays
+Acceptance. Replay retains event identity and cannot create a second financial effect; logs omit credentials and excessive response bodies.
+P14 API request logs
+Route: /partners/logs. Purpose: Diagnose partner request failures.
+Content. Timestamp, app/key prefix, method/path template, status, stable error code, request ID and latency
+Filters. App; status; request ID; time
+Actions. View sanitized detail and link owned operation; export if granted
+API dependency. GET /partner/v1/request-logs; GET /partner/v1/request-logs/{id}
+Acceptance. No request secret/raw KYC body is returned; cross-partner identifiers cannot resolve.
+P15 Usage and quotas
+Route: /partners/usage. Purpose: Track enforced request and product limits.
+Content. Requests, 429 count, quota limit/remaining/reset, transaction limits and scoped usage trends
+Filters. Period; app; route group; environment
+Actions. Inspect quota policy, request reviewed increase
+API dependency. GET /partner/v1/usage; GET /partner/v1/quotas; POST /partner/v1/quota-change-requests
+Acceptance. Charts reflect enforcement counters; UI does not interpret advisory headers as proof of real quotas.
+P16 Customers and accounts
+Route: /partners/customers. Purpose: Inspect resources explicitly delegated to partner.
+Content. Partner customer reference, consent/delegation state, masked customer, accounts, permitted balances and product
+Filters. Reference; account; delegation state
+Actions. Create onboarding request if product permits; inspect authorized resources
+API dependency. GET /partner/v1/customers; GET /partner/v1/accounts; POST /partner/v1/customer-onboarding-requests
+Acceptance. Partner cannot claim any Furaia customer by knowing an ID; creation does not bypass KYC/account eligibility.
+P17 Partner transactions
+Route: /partners/transactions. Purpose: Track API-initiated financial operations.
+Content. Operation, app, customer reference, kind, amount/fee, currency, state, idempotency reference and provider-safe timeline
+Filters. State; app; customer; period
+Actions. View permitted details, receipt and support case; no arbitrary ledger posting
+API dependency. GET /partner/v1/operations; GET /partner/v1/operations/{id}
+Acceptance. Partner operations use R1 command handlers with scoped delegation, not an independent ledger write path.
+P18 Reconciliation and settlement
+Route: /partners/reconciliation. Purpose: Compare partner records with authorized Furaia reports.
+Content. Report period, entity/currency, opening/closing exposure where contract applies, gross/fee/net totals, settlement status and exception reference
+Filters. Period; currency; report type
+Actions. Download permitted reports, submit discrepancy with evidence
+API dependency. GET /partner/v1/reports; POST /partner/v1/discrepancies
+Acceptance. Settlement account data is contract-scoped; raw safeguarding bank statements are never exposed by default.
+P19 Team and roles
+Route: /partners/team. Purpose: Manage partner member access and invitations.
+Content. Member, role, app/environment grants, MFA status, invite expiry and last activity
+Filters. Role; state; app
+Actions. Invite, grant permitted roles, revoke and view permission preview with step-up
+API dependency. GET /partner/v1/members; POST /partner/v1/invitations; PATCH /partner/v1/members/{id}
+Acceptance. No user grants a capability they cannot administer; last owner and self-elevation controls are enforced.
+P20 Billing and commercial terms
+Route: /partners/billing. Purpose: Show contracted fees and invoice history.
+Content. Commercial plan/version, usage units, fees/tax, invoice period/status and downloadable document
+Filters. Period; invoice state
+Actions. Read/download invoices, raise billing query; no card collection unless separately specified
+API dependency. GET /partner/v1/commercial-terms; GET /partner/v1/invoices
+Acceptance. Before a billing engine exists show approved commercial terms without invented invoice totals; billed usage is traceable and adjustments auditable.
+P21 Production access
+Route: /partners/production-access. Purpose: Request reviewed production activation.
+Content. Approved KYB, app/scopes, test results, webhook readiness, support contacts, security declaration and terms version
+Filters. Application state
+Actions. Submit, respond to evidence request, view approved scope and activation decision
+API dependency. POST /partner/v1/production-access-requests; GET /partner/v1/production-access-requests/{id}
+Acceptance. Sandbox keys never become production keys; activation requires staff approval and backend readiness gate.
+P22 Support and service status
+Route: /partners/support. Purpose: Raise integration issues and inspect service communication.
+Content. Ticket, request/operation ID, sanitized evidence, incident notices and response timeline
+Filters. State; category; environment
+Actions. Create/reply ticket, attach evidence, subscribe to notices
+API dependency. GET /partner/v1/support-tickets; POST /partner/v1/support-tickets; GET /partner/v1/service-status
+Acceptance. No promise of an SLA is fabricated; response target is read from signed commercial policy.
+P23 Organization security and audit
+Route: /partners/security. Purpose: Inspect security settings and member action history.
+Content. Sessions, MFA, approved origins/network policy where supported, credential events and organization audit
+Filters. Actor; action; period
+Actions. Revoke own sessions, configure permitted policies with step-up, export scoped audit
+API dependency. GET /partner/v1/security; GET /partner/v1/audit-events; DELETE /partner/v1/sessions/{id}
+Acceptance. Partner audit contains only own organization events; policy edits cannot lock out all recovery authority without verification.
+7 End to end workflows
+Customer onboarding and account opening
+Registration creates an identity and a contact-verification challenge. After verified contact, the customer submits the policy-selected identity fields and scanned evidence. The server moves the application through NOT_STARTED, EVIDENCE_PENDING, PROVIDER_PENDING, REVIEW, VERIFIED, REJECTED, EXPIRED or SUSPENDED using allowed transitions. The portal shows required remediation; it does not infer approval from an uploaded document. Synthetic verification stays within sandbox.
+A VERIFIED customer requests an eligible product with its terms and policy version. Account opening checks legal entity, currency, tier and account-count policy inside one transaction, creates the customer liability account and its zero projection, records consent and returns the stable account identifier. Failure rolls back the entire opening. Material KYC expiration or suspension blocks affected new commands according to policy while retaining access to records and support.
+Money submission and exact replay
+The portal obtains a server preview containing amount, fees, source, destination, applicable policy and expiry. Confirmation sends an immutable payload and a new Idempotency-Key. A network failure preserves the key and payload; status lookup or identical retry resolves the result. A FINAL match replays its stored response even when new writes are disabled. A changed fingerprint returns IDEMPOTENCY_CONFLICT. A denied new command consumes no key and creates no financial effect.
+Payout submission returns 202 and status_url after hold, operation and outbox commit. Provider submission runs after commit. Accepted does not mean settled. UNKNOWN retains the hold and inquiry path until authoritative evidence arrives. Collection account credit occurs only through receipt processing and posting. The UI polls with bounded exponential backoff, beginning at 2 seconds and capped at 30 seconds while visible; server Retry-After takes precedence. On background tabs stop polling and resume with a status read.
+Manual correction and exception resolution
+An operator selects an approved adjustment template and compatible accounts, enters integer amount, reason and evidence, and reviews balanced posting preview. Proposal freezes payload and digest. A different authorized checker reviews the exact payload and decides with a mandatory reason. The executor revalidates digest, scope, account state, funds and money gate, then calls the restricted posting gateway. Journal reference_kind is maker_checker_case and reference_id is the case ID. BLOCKED gate outcomes are retryable with no journal; successful execution replay cannot post again.
+A reconciliation resolution is nonmonetary unless it explicitly links a separate approved adjustment. Closing an exception records evidence and decision history. It never edits provider observations, replaces the original statement, or writes a balance. A late conflicting provider outcome reopens or creates an investigation according to the backend contract.
+Partner self onboarding
+Step | Result | Control
+Register and verify contact | Verified human identity | Anti-abuse, challenge expiry and MFA.
+Create organization | DRAFT business profile | Transactional owner membership and tenant allocation.
+Submit business evidence | SUBMITTED or REVIEW | Versioned checklist, scanning and restricted evidence access.
+Receive sandbox entitlement | SANDBOX_ACTIVE | No production resources or real money; entitlement may precede full KYB only under approved sandbox policy.
+Create sandbox app | App with approved sandbox scopes | Permissions bounded by organization entitlement.
+Issue sandbox credential | One-time secret | Hash storage or approved signing-key architecture; expiry and revocation.
+Test integration | Recorded readiness results | Success, rejection, UNKNOWN, replay and callback scenarios.
+Request production | PRODUCTION_REVIEW | KYB, contract, support and security evidence complete.
+Staff approval and activation | PRODUCTION_ACTIVE for granted apps/scopes | Distinct authorized reviewers; operational backend gate; separate production key issuance.
+Partner lifecycle states are DRAFT, CONTACT_VERIFIED, SUBMITTED, REVIEW, EVIDENCE_REQUIRED, SANDBOX_ACTIVE, PRODUCTION_REVIEW, PRODUCTION_ACTIVE, REJECTED, SUSPENDED and CLOSED. Sandbox entitlement is also stored independently so KYB review does not erase test access unintentionally. Organization status, app status and credential status are separate records. Suspension disables the applicable financial delegation and credentials while preserving authorized records and support.
+Credential lifecycle
+Issue credentials only for an authorized application, environment and subset of granted scopes. Generate secrets server-side using cryptographic randomness and display them once after step-up. The default lifetime is 90 days unless commercial/security policy specifies less. Rotation creates a successor and a maximum 24-hour overlap recorded in policy; emergency revocation has no overlap. Revocation must be authoritative or propagated within a measured 60-second maximum; money commands must not rely on an indefinitely cached credential grant. Never recover or email an existing secret.
+Partner webhooks
+Events have a stable event_id, type, schema_version, occurred_at, environment, application_id and sanitized resource body. Initial event catalog: operation.accepted, operation.succeeded, operation.failed, operation.unknown, account.opened, verification.updated, production_access.updated and credential.expiring. Subscribe only to approved events and delegated resources. The provider callback authenticating inbound rail events is separate from these outbound partner webhooks.
+Sign raw body plus timestamp and event ID using the approved HMAC scheme or a separately documented asymmetric scheme. For the default HMAC contract use X-Furaia-Event-Id, X-Furaia-Timestamp, X-Furaia-Key-Id and X-Furaia-Signature; canonical signed bytes are timestamp + "." + event_id + "." + raw_body. Verify constant-time signatures, reject timestamp skew beyond 5 minutes and deduplicate by event ID. Rotation publishes key ID and supports only a bounded overlap. A 2xx acknowledges delivery; retries use the same event ID and new attempt/signature timestamp.
+Default retries occur after 1 minute, 5 minutes, 15 minutes, 1 hour, 4 hours and 12 hours, then dead-letter by 24 hours. Apply jitter and endpoint-specific concurrency limits. HTTP timeout is 10 seconds with 3-second connect timeout; retries cannot block money transactions. Reject SSRF targets, validate HTTPS certificates and suppress redirects to unvalidated destinations. Portal replay is rate-limited, audited and uses the same event identity.
+Business customer approvals
+Business payment proposals freeze account, beneficiary version, amount, fee, quote validity and policy version. Distinct business approver membership is checked at decision and execution. Staff permission grants cannot stand in for business customer consent. Funds are not guaranteed at approval: execution rechecks availability and either reserves/posts once or records an explicit rejection/block. Expired previews require a new proposal rather than changing approved amounts.
+8 Data and API contract
+Required resource projections
+Resource | Mandatory public fields
+Account | id, owner_reference, product_code, legal_entity_id where authorized, currency, state, posted_minor, held_minor, available_minor, as_of, version.
+Operation | id, kind, state, amount_minor, fee_minor, currency, scoped account references, business_reference, created_at, updated_at, status_url.
+Case | id, kind, scope, payload_digest, immutable proposal summary, maker, state, expires_at, version, decision summary, execution_state and result reference.
+Customer verification | application_id, state, requirements, evidence scan states, permitted reviewer requests, policy_version and timestamps.
+Partner organization | id, legal profile, lifecycle state, sandbox entitlement, production entitlement, allowed products/scopes and version.
+Application | id, organization_id, environment, name, status, approved_scopes, allowed origins and version.
+Credential metadata | id, prefix, application_id, environment, scopes, state, issued_at, expires_at, last_used_at; secret only in issuance/rotation response.
+Webhook delivery | event_id, endpoint_id, schema_version, delivery_state, attempt_count, sanitized response summary, next_attempt_at and timestamps.
+Report/export | id, type, scope, period, currency, state, as_of, policy/schema version, checksum, expires_at and authorized download route.
+Relationships use immutable UUID strings. Externally visible reference IDs are not access capabilities. Amounts are signed or unsigned base-10 integer strings as defined by schema; no floating-point JSON money values. Currency exponent comes from the registry. Server computes available funds according to ledger/hold policy; clients never reconstruct authority from a stale posted balance.
+Request and response conventions
+Authenticated scopes are derived from verified principals and membership. A supplied organization or account ID is a selector requiring authorization, never proof of permission.
+GET lists return data and page with next_cursor, has_more and as_of. Filters are validated and cursor binds sort/scope/filter digest. Server uses stable created_at/id ordering unless another documented order is required.
+Errors use error.code, error.message, error.details and request_id, mapped to the existing envelope if different. X-Request-Id appears on every response; Idempotent-Replayed is true only on stored replay.
+Money and account-opening POST requests require Idempotency-Key with server-defined syntax and retention. Default target retention is at least 24 hours and longer than the provider retry horizon; existing ledger references remain unique permanently.
+201 means created/completed under that endpoint contract; 202 means accepted for asynchronous work with status_url; 409 means conflict or changed idempotency payload; 422 means invalid business request; 429 means enforced throttling; 503 means gate/dependency unavailable.
+PATCH and case decisions submit expected_version. A conflicting version returns 409 VERSION_CONFLICT; the client reloads and asks the user to review changed data.
+Reject unknown money-command fields and bound request bodies. Quotas return RateLimit-Limit, RateLimit-Remaining and RateLimit-Reset; 429 includes Retry-After. Headers derive from real enforcement when that subsystem lands.
+OpenAPI defines security, required scopes, all request/response schemas, enum values, examples, errors, pagination, amount encoding and idempotency. Generate client types and contract fixtures from it; preserve backward-compatible additions under /v1.
+Minimum stable error catalog
+Code | HTTP | User action
+UNAUTHENTICATED | 401 | Sign in again.
+FORBIDDEN | 403 | Request appropriate access.
+RESOURCE_NOT_FOUND | 404 | Check owned resource or filter.
+IDEMPOTENCY_CONFLICT | 409 | Do not mutate a retry payload; review intended new request.
+REQUEST_IN_PROGRESS | 409 or documented 202 | Poll existing operation or retry identical request after guidance.
+VERSION_CONFLICT | 409 | Reload and review before decision.
+INSUFFICIENT_AVAILABLE_FUNDS | 422 | Adjust amount or wait for funds.
+POLICY_LIMIT_EXCEEDED | 422 | Review product limits.
+VERIFICATION_REQUIRED | 422 | Complete identity or business review.
+BENEFICIARY_INVALID | 422 | Revalidate destination.
+PREVIEW_EXPIRED | 409 | Obtain a new preview and reconfirm.
+RATE_LIMITED | 429 | Wait for Retry-After.
+MONEY_WRITES_DISABLED | 503 | Wait for policy restoration; reads remain available.
+MONEY_WRITES_GATE_UNAVAILABLE | 503 | Wait for governance recovery; retain retry key.
+DEPENDENCY_UNAVAILABLE | 503 | Check status later; do not duplicate a payment.
+Preview response example
+A payout preview returns preview_id, source_account_id, beneficiary_id and beneficiary_version, currency, amount_minor, fee_minor, total_debit_minor, available_minor, permitted, violations, expires_at and policy_version. Submission includes the immutable preview identifier and money fields required by the reviewed endpoint. The server recomputes policy and verifies preview binding; a browser-altered fee or source cannot bypass the check.
+Developer documentation contents
+Getting started: organization onboarding, app creation, sandbox key, first authenticated read, first synthetic payment and first verified webhook.
+Authentication: chosen key/token scheme, credential prefixes, required headers, scope registry, rotation and revocation behavior.
+Resources: customer delegation, account products, balances, operations, transfers, collections, payouts, permitted reports and support references.
+Reliability: exact replay, canonical fingerprinting, asynchronous states, UNKNOWN handling, callback ordering, timeouts and bounded retry.
+Operations: quotas, request IDs, support evidence, webhook diagnostics, settlement schedules from contract and reconciliation file specification.
+Change management: API/schema versions, deprecation notices, compatibility window, migration examples and changelog.
+Reference downloads: OpenAPI, event schemas, scrubbed simulator fixtures and deterministic runnable examples. Public docs omit tenant data, private commercial terms and production secrets.
+9 Backend dependency register
+Capability | Current classification | Required delivery
+Ledger and R1 commands | Reported foundation | Verify route contracts, posting grants and PT-15 insertion under furaia_app.
+Customer identity/onboarding/account opening | Reported synthetic foundation | Map policy routes; production auth, KYC adapter and evidence storage.
+Staff permissions/maker-checker | Reported foundation | Map staff APIs, immutable payload views, real SSO and membership lifecycle.
+Operations lists and aggregates | Required extension | Scoped staff projections, queues, detail timelines, safe PII reveal and reports.
+Reconciliation and runner | Reported foundation | Staff read/assignment APIs and staging scheduled execution evidence.
+AppConfig/Redis governance and SNS | Reported code completion | Deployed refresher, takeover/outage/recovery tests, actual notification receipt.
+Partner organization/KYB and portal auth | Required extension R2 | Tenant membership, policy review, lifecycle and sandbox entitlement.
+Partner app/key/scope registry | Required extension R2 | Issuance, rotation, revocation, scoped delegated authorization and quotas.
+Partner outbound webhooks | Required extension R2 | SSRF protection, signing, outbox delivery, retry/dead-letter and portal diagnostics.
+Business customer team/payments | Required extension | Organization membership, account grants and customer-specific dual control.
+Support/disputes and exports | Required extension | Ticket visibility rules, evidence pipeline, report job lifecycle and safe download.
+Billing and settlement portal reports | Required extension | Contract-defined terms, usage metering and scoped report/invoice generation.
+Real rail and KYC | Integration and operational verification | Provider contracts, certified fixtures and deployed acceptance tests.
+Rate limiting | Required hardening | Actual scoped enforcement and ADR update; headers alone do not satisfy acceptance.
+Production deployment and DR | Operational verification | Least-privilege infrastructure, reviewed release, measured backup restore and RPO/RTO evidence.
+Frontend work may use deterministic contract fixtures while a dependency is built. Fixtures must carry a visible sandbox environment and never be silently substituted for a failed real API. Integrated features require tests against the actual backend principal and restricted database role where applicable. A page becomes operational only when its authorization and workflow dependencies pass acceptance.
+10 Verification and delivery
+Delivery batches
+Batch | Deliverables | Exit evidence
+D0 Contract mapping | Page inventory, existing-route map, OpenAPI gaps, permission mapping and fixture catalog | All page IDs mapped; no unreviewed hardcoded principal; backend status classified.
+D1 Shared shell and identity | Three layouts, scope/environment selectors, sessions, errors, accessible forms/tables | Separate auth boundaries, logout/cache clearing, CSRF and keyboard tests.
+D2 Operations reads | O01 through O10 and O17 through O22 read capabilities | Tenant-scoped projections, fresh/stale states, aggregate parity and safe exports.
+D3 Customer onboarding and reads | C01 through C06 and C12 through C16 | Ownership, upload quarantine, policy opening, statement and recovery tests.
+D4 Customer money journeys | C07 through C11 | Idempotency, gate denial, UNKNOWN holds, duplicate submit and provider outcomes.
+D5 Governed operations | O11 through O16 mutations plus staff controlled grants | Distinct maker/checker, version race, payload tamper, PT-15 runtime grants and BLOCKED retry.
+D6 Partner onboarding and developer docs | P01 through P05, P09 and P10 | KYB workflow, restricted sandbox entitlement, tested docs and production review isolation.
+D7 Partner applications and diagnostics | P06 through P08, P11 through P15, P19 and P23 | Credential lifecycle, webhook signing/replay, isolation, quotas and sanitized logs.
+D8 Partner financial and commercial flows | P16 through P18 and P20 through P22 | Delegated R1 commands, reports, commercial traceability and controlled production activation.
+D9 Business customer workflows | C17 and C18 | Membership/last-owner control, payment freeze and distinct customer approvers.
+D10 Staging acceptance and handover | Integrated journeys, incidents, restores, accessibility and performance evidence | Target environment exercises complete; defects resolved; release scope signed.
+Batches D2, D3 and D6 can proceed in parallel after D0/D1 contracts are stable. Each related batch lands with targeted tests, formatting/static analysis and the full affected backend suite. Fix failing evidence before extending its dependent workflow. Do not require an extra confirmation for ordinary reversible test fixes; record material scope changes and deployment authorization separately.
+Acceptance scenario matrix
+ID | Scenario | Required evidence
+AUTH01 | Staff/customer/partner credential interchange | Every wrong identity domain is rejected.
+AUTH02 | Cross-tenant or organization ID substitution | No restricted record, aggregate, export or existence leak.
+AUTH03 | Role revocation during open session | Next protected action rejects; UI clears restricted cached records.
+AUTH04 | CSRF and expired session on money form | No unauthorized write; retry resolves prior operation safely.
+MONEY01 | 100 concurrent identical submissions | One operation and journal effect; responses converge.
+MONEY02 | Same key with changed amount/beneficiary | 409 conflict; original effect unchanged.
+MONEY03 | Fresh false and unavailable/stale gate | New flows create no money effect/key consumption; FINAL replay works.
+MONEY04 | Accepted payout timeout and late evidence | UNKNOWN preserves hold; authoritative result causes one terminal effect.
+MONEY05 | Manual adjustment using furaia_app | Permitted posting succeeds with case reference; direct ledger DML remains denied.
+CASE01 | Maker approves own case or excluded prior actor | Domain rejects regardless of UI.
+CASE02 | Two decisions or repeated execution | One decision winner and one effect; retries return stored result.
+CASE03 | Payload tamper, expiry and BLOCKED retry | Tamper/expiry cannot execute; gate recovery permits controlled retry.
+KYC01 | Unscanned file and unauthorized evidence access | Quarantine enforced and reads denied.
+ACCOUNT01 | Opening replay and failed policy eligibility | One zero-balance account or no account; no partial projection.
+PARTNER01 | Sandbox production key/resource swap | Rejected with no cross-environment effect.
+PARTNER02 | Scope expansion or self production approval | Denied until reviewed grant and readiness gate.
+KEY01 | Rotation, expired and revoked credentials | Bounded overlap only; secret never redisplayed; revocation propagation measured.
+HOOK01 | Forged, replayed and reordered events | Signature/age/dedup checked; no duplicated effect.
+HOOK02 | Webhook SSRF and redirect destination | Private/metadata targets blocked; no internal network access.
+HOOK03 | Repeated failure and portal replay | Bounded retries then dead letter; stable event identity.
+RECON01 | Same and amended statement ingestion | Stable replay; amendment exception; prior completed run preserved.
+REPORT01 | Cross-scope export download | Denied even if job/link ID is known.
+UI01 | Keyboard, screen reader and 200 percent zoom | All journeys usable with no clipping or focus trap.
+UI02 | Offline, stale data and dependency failure | No false zero balance/success; safe recovery guidance.
+OPS01 | Refresher Redis/upstream outage and takeover | Readers fail closed on expiry; old lease cannot publish; recovery observed.
+OPS02 | Alert delivery and recovery | Threshold/dedup correct; actual target receipt recorded separately.
+OPS03 | Backup restore and workload recovery | Measured RPO 5 minutes/RTO 2 hours target evidence.
+DOC01 | Docs examples and OpenAPI parity | Runnable fixtures pass and every exposed route has security/error schemas.
+Performance and data quality acceptance
+Proposed staging test targets: authenticated shell usable within 2 seconds on a representative 4G connection; p95 read API responses below 500 ms excluding separately measured external dependencies; asynchronous submit acknowledgement below 1 second excluding deliberate upstream calls, which must not occur inside money transactions. Exercise 100 concurrent users per surface as an initial load profile, then revise from actual forecast. Measure percentiles, error rate, queue lag and database contention; these targets are requirements to validate, not claimed performance.
+Dashboards must not issue a per-row API call for each table entry. Use aggregate/detail projections and capped polling. Large reports run asynchronously. Show data watermark and reconciliation period so daily totals cannot be mistaken for real-time safeguarding balances. Monetary totals are compared to backend projections and report snapshots in automated tests.
+11 Operational handover
+Release evidence
+Store page/API/permission traceability, approved OpenAPI/event schema versions and contract fixture results alongside the release.
+Record deployed frontend/backend/container versions, infrastructure revision, environment configuration, secret references and rollback procedure.
+Exercise real staff SSO, customer auth, partner credentials, domain grants and emergency revocation in staging.
+Exercise money gate off/stale/unavailable, Redis outage, lease takeover, upstream recovery and actual alert receipt. Record timestamps and effects.
+Verify PT-15 through restricted runtime role, independent accounting review, provider certification and reconciliation against actual statements for the production scope.
+Complete backup restoration, security review, accessibility review, load test and incident walkthrough. Record measured results and unresolved defects.
+Confirm operator access, duty roster, escalation contacts and support/commercial policy are active before external onboarding.
+Approve production activation separately from code completion. A passing local/CI suite is required evidence but does not replace deployment and provider exercises.
+Operator procedures
+Balance drift: open scoped accounts and journals, compare authoritative projections, capture incident evidence and follow the controlled money-write pause procedure. Do not change balances directly. Provider UNKNOWN: inspect held funds and inquiry/statement evidence; do not resubmit a new payout. Reconciliation break: assign investigation, retain source digest and proposal evidence, resolve nonmonetary classification or create a separately approved adjustment. Webhook compromise: revoke/rotate the affected secret, pause scoped delivery if needed, preserve attempt evidence and notify affected partners through the incident procedure.
+Access incident: revoke the identity/session/key and review recent scoped actions. Governance outage: inspect validation age, refresher lease and Redis state, distinguish MONEY_WRITES_DISABLED from MONEY_WRITES_GATE_UNAVAILABLE, restore dependencies and verify a fresh authoritative snapshot before new commands resume. Partner suspension: disable the reviewed scope without deleting transaction history; communicate status and preserve support access under policy.
+Definition of complete
+A dashboard batch is code complete when its full page workflows, actual contracts, domain authorization, tests and documentation pass. It is integrated when those tests run against the actual services rather than mocks. It is operationally complete when deployed identity, provider, governance, notification and recovery exercises meet acceptance. The three-dashboard release is complete when all in-scope page IDs and workflow scenarios have evidence, required extensions are implemented, and production activation has been approved for the services offered.
+Page inventory and traceability index
+Surface | Page count | Page identifiers
+Operations | 22 | O01 to O22
+Account holder | 18 | C01 to C18
+Partner | 23 | P01 to P23
+Total | 63 | 63 primary pages with nested detail and form states
+For each page ID, the implementation traceability record must contain frontend route, actual API route/schema, domain permission, environment eligibility, backend dependency, scenario IDs, latest CI evidence and staging evidence. This index is the basis for scope completion; a navigation entry alone does not satisfy the page requirement.

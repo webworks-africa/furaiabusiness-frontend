@@ -1,0 +1,2 @@
+import {Button} from './button';
+export function EmptyList({filtered,onReset}:{filtered:boolean;onReset:()=>void}){return <section className="state-panel" role="status"><h2>{filtered?'No results match these filters':'No records are available'}</h2><p>{filtered?'Change or reset the filters to see other records.':'Records will appear here when they are available in this context.'}</p>{filtered&&<Button variant="outline" onClick={onReset}>Reset filters</Button>}</section>;}

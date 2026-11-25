@@ -1,0 +1,29 @@
+# Dependencies and build output
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+!.env.test
+!.env.production
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+
+# Local caches, logs and editor files
+*.log
+.vite/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Archived browser evidence
+future-phases/previous-platform/docs/evidence/

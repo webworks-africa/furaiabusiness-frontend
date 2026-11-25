@@ -1,0 +1,439 @@
+.document-view-column,
+.document-presentation {
+  min-width: 0;
+}
+.financial-paper {
+  --paper-accent: #123c32;
+  background: #fff;
+  color: #192820;
+  border: 1px solid #d9e3dd !important;
+  border-radius: 6px;
+  padding: 38px;
+  max-width: 920px;
+  width: 100%;
+  margin: 16px auto;
+  font-size: 13px;
+}
+.financial-paper.accent-navy {
+  --paper-accent: #173659;
+}
+.financial-paper.accent-charcoal {
+  --paper-accent: #30373b;
+}
+.financial-paper.invoice-classic {
+  border-top: 5px solid var(--paper-accent) !important;
+}
+.financial-paper.invoice-modern {
+  border-left: 10px solid var(--paper-accent) !important;
+}
+.financial-paper.invoice-minimal {
+  border: none !important;
+  border-radius: 0;
+}
+.document-masthead {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 26px;
+  border-bottom: 1px solid #dce5df;
+}
+.document-issuer {
+  max-width: 55%;
+  min-width: 0;
+}
+.document-issuer .invoice-logo {
+  max-width: 125px;
+  max-height: 55px;
+  object-fit: contain;
+  margin: 0 0 14px;
+}
+.document-issuer h2 {
+  font-size: 21px;
+  color: var(--paper-accent);
+  margin: 0 0 10px;
+  overflow-wrap: anywhere;
+}
+.document-issuer p,
+.document-parties p {
+  white-space: pre-line;
+  font-size: 12px;
+  color: #65756b;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.document-heading {
+  text-align: right;
+  min-width: 0;
+}
+.document-heading > span {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-size: 27px;
+  font-weight: 650;
+  color: var(--paper-accent);
+}
+.document-heading > strong {
+  display: block;
+  font-size: 14px;
+  margin: 12px 0;
+  overflow-wrap: anywhere;
+}
+.document-heading > small {
+  font-size: 11px;
+  color: #64786b;
+}
+.document-parties {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 230px;
+  gap: 30px;
+  margin: 28px 0;
+}
+.document-label {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #65756b;
+}
+.document-parties h3 {
+  font-size: 15px;
+  margin: 12px 0;
+}
+.document-parties dl {
+  margin: 0;
+}
+.document-parties dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  font-size: 12px;
+  margin: 12px 0;
+}
+.document-parties dt {
+  color: #687e6d;
+}
+.document-parties dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.document-lines table {
+  min-width: 560px;
+  width: 100%;
+  font-size: 12px;
+}
+.document-lines th {
+  background: var(--paper-accent) !important;
+  color: white !important;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 14px !important;
+}
+.document-lines td {
+  padding: 15px 14px !important;
+  border-bottom: 1px solid #e1e9e3;
+  vertical-align: top;
+}
+.document-lines td:first-child {
+  width: 47%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.document-lines td:not(:first-child),
+.document-lines th:not(:first-child) {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.document-lines td small {
+  display: block;
+  color: #76867b;
+  font-size: 10px;
+  margin-top: 8px;
+}
+.document-lines tbody tr:nth-child(odd) {
+  background: #f4f7f5;
+}
+.invoice-minimal .document-lines th {
+  background: white !important;
+  color: var(--paper-accent) !important;
+  border-bottom: 1px solid #c9d7cf;
+}
+.invoice-minimal .document-lines tbody tr {
+  background: white;
+}
+.document-totals {
+  margin: 26px 0 30px auto;
+  width: min(100%, 330px);
+}
+.document-totals > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 9px 0;
+}
+.document-totals dt {
+  color: #687b6d;
+}
+.document-totals dd {
+  margin: 0;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.document-grand-total {
+  border-top: 1px solid #cbd9d0;
+  margin-top: 12px;
+  padding-top: 18px !important;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--paper-accent);
+}
+.document-notes {
+  border-top: 1px solid #e2e9e3;
+}
+.document-notes h3 {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin: 24px 0 10px;
+  color: #64796a;
+}
+.document-notes p {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  line-height: 1.8;
+}
+.document-tax {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  background: #f6f8f6;
+  padding: 18px;
+  margin-top: 28px;
+  break-inside: avoid;
+}
+.document-tax svg {
+  width: 85px;
+  height: 85px;
+  flex-shrink: 0;
+}
+.document-tax strong {
+  font-size: 12px;
+}
+.document-tax p,
+.document-tax b {
+  font-size: 10px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.document-tax b {
+  color: #6a7e6e;
+}
+.document-footer {
+  border-top: 1px solid #e1e9e3;
+  margin-top: 26px;
+  padding-top: 18px;
+  font-size: 11px;
+  color: #6b7d70;
+  white-space: pre-line;
+}
+.document-received {
+  background: #edf4ef;
+  padding: 26px;
+  margin: 30px 0;
+}
+.document-received span {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+.document-received strong {
+  display: block;
+  font-size: 32px;
+  color: var(--paper-accent);
+  margin-top: 14px;
+  overflow-wrap: anywhere;
+}
+.receipt-details > div {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 20px;
+  padding: 13px 0;
+}
+.receipt-details dt {
+  color: #718172;
+}
+.receipt-details dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.document-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 16px 0;
+}
+.document-email {
+  margin: 20px 0;
+}
+.document-deliveries {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+.document-deliveries li {
+  display: grid;
+  gap: 8px;
+  border-top: 1px solid #dce6df;
+  padding: 16px 0;
+}
+.profile-menu {
+  margin-left: auto;
+  position: relative;
+}
+.profile-menu > summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  list-style: none;
+  cursor: pointer;
+  border: 1px solid #dbe5e1;
+  border-radius: 8px;
+  padding: 7px 10px;
+}
+.profile-menu > summary::-webkit-details-marker {
+  display: none;
+}
+.profile-menu > summary > span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 12px;
+}
+.profile-menu small {
+  font-size: 10px;
+  text-transform: capitalize;
+  color: #677c6c;
+}
+.profile-menu nav {
+  position: absolute;
+  right: 0;
+  top: 62px;
+  min-width: 210px;
+  background: white;
+  border: 1px solid #d9e4dc;
+  border-radius: 8px;
+  padding: 10px;
+  z-index: 80;
+  box-shadow: 0 12px 30px #102c2115;
+}
+.profile-menu nav a,
+.profile-menu nav button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  color: #17352a;
+  font-size: 13px;
+}
+.profile-menu nav a:hover,
+.profile-menu nav button:hover {
+  background: #edf5f0;
+}
+@media (max-width: 650px) {
+  .financial-paper {
+    padding: 22px 18px;
+  }
+  .document-masthead {
+    gap: 12px;
+  }
+  .document-heading > span {
+    font-size: 20px;
+  }
+  .document-issuer h2 {
+    font-size: 16px;
+  }
+  .document-heading > strong {
+    font-size: 11px;
+  }
+  .document-parties {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .document-received strong {
+    font-size: 25px;
+  }
+  .document-tax {
+    gap: 12px;
+    padding: 10px;
+  }
+  .document-tax svg {
+    width: 65px;
+    height: 65px;
+  }
+  .receipt-details > div {
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+  .document-grand-total {
+    font-size: 14px;
+  }
+  .profile-menu > summary {
+    padding: 5px;
+    gap: 6px;
+  }
+  .profile-menu > summary > span:last-child {
+    max-width: 75px;
+  }
+  .profile-menu nav {
+    top: 50px;
+  }
+}
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+  .financial-paper {
+    max-width: none;
+    margin: 0;
+    border: 0 !important;
+    box-shadow: none;
+    padding: 10mm 6mm;
+    break-inside: auto !important;
+  }
+  .financial-paper * {
+    visibility: visible !important;
+  }
+  .document-parties {
+    grid-template-columns: 1fr 200px;
+  }
+  .document-lines {
+    overflow: visible;
+  }
+  .document-lines table {
+    min-width: 0;
+  }
+  .document-lines thead {
+    display: table-header-group;
+  }
+  .document-lines tr,
+  .document-totals,
+  .document-received {
+    break-inside: avoid;
+  }
+  .document-email,
+  .document-actions {
+    display: none !important;
+  }
+  body > article.financial-paper {
+    display: block !important;
+  }
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

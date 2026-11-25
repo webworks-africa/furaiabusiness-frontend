@@ -1,0 +1,4022 @@
+[
+  {
+    "page": "O01",
+    "method": "GET",
+    "target_path": "/ops/v1/overview",
+    "schema_status": "executable OpenAPI 0.9.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Server requires overview.view and independently redacts each source without its current capability. Bind all data to active legal entity/environment; authorize every queue/detail and acknowledgement independently. Source snapshot/measurement times and integer minor-unit sums per currency; no payment execution authority inferred.",
+    "idempotency": "read-only; linked alert acknowledgement retains its immutable key/payload contract",
+    "versioning": "source snapshots and latest reconciliation version per currency",
+    "evidence": "tests/overview.test.ts; tests/overview-ui.test.tsx; tests/e2e/overview.spec.ts",
+    "domain_permissions": [
+      "overview.view",
+      "accounts.view",
+      "operations.view",
+      "holds.view",
+      "reconciliation.view",
+      "governance.view",
+      "outbox.view",
+      "alerts.view",
+      "alerts.acknowledge"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "OVERVIEW_PARITY",
+      "OVERVIEW_FRESHNESS",
+      "OVERVIEW_RESTRICTED",
+      "OUTBOX_SCOPE"
+    ],
+    "frontend_route": "/ops"
+  },
+  {
+    "page": "O02",
+    "method": "GET",
+    "target_path": "/ops/v1/customers",
+    "schema_status": "executable OpenAPI 0.6.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "A cross-tenant search returns no restricted rows; reveals are audited; linked account access is independently authorized.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "customers.test.ts; customers.spec.ts; Laravel mapping pending",
+    "domain_permissions": [
+      "customers.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/customers"
+  },
+  {
+    "page": "O02",
+    "method": "GET",
+    "target_path": "/ops/v1/customers/{id}",
+    "schema_status": "executable OpenAPI 0.6.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "A cross-tenant search returns no restricted rows; reveals are audited; linked account access is independently authorized.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "customers.test.ts; customers.spec.ts; Laravel mapping pending",
+    "domain_permissions": [
+      "customers.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/customers"
+  },
+  {
+    "page": "O03",
+    "method": "GET",
+    "target_path": "/ops/v1/onboarding",
+    "schema_status": "executable OpenAPI 0.6.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Quarantined evidence cannot be opened; review history persists; reviewer cannot bypass final decision authority.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "customers.test.ts; customers.spec.ts; Laravel mapping pending",
+    "domain_permissions": [
+      "onboarding.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "KYC01"
+    ],
+    "frontend_route": "/ops/onboarding"
+  },
+  {
+    "page": "O03",
+    "method": "POST",
+    "target_path": "/ops/v1/onboarding/{id}/review-requests",
+    "schema_status": "target draft \u2014 refine in D2",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Quarantined evidence cannot be opened; review history persists; reviewer cannot bypass final decision authority.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "kyc.review"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "KYC01"
+    ],
+    "frontend_route": "/ops/onboarding"
+  },
+  {
+    "page": "O04",
+    "method": "GET",
+    "target_path": "/ops/v1/accounts",
+    "schema_status": "executable D2a target \u2014 OpenAPI 0.3.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Balance labels match backend semantics; account closure with funds or active obligations is refused by server.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "Local mock tests/operations.test.ts; tests/e2e/operations.spec.ts. Actual Laravel and staging unmapped.",
+    "domain_permissions": [
+      "accounts.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/accounts"
+  },
+  {
+    "page": "O04",
+    "method": "GET",
+    "target_path": "/ops/v1/accounts/{id}",
+    "schema_status": "executable D2a target \u2014 OpenAPI 0.3.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Balance labels match backend semantics; account closure with funds or active obligations is refused by server.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "Local mock tests/operations.test.ts; tests/e2e/operations.spec.ts. Actual Laravel and staging unmapped.",
+    "domain_permissions": [
+      "accounts.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/accounts"
+  },
+  {
+    "page": "O05",
+    "method": "GET",
+    "target_path": "/ops/v1/operations",
+    "schema_status": "executable D2a target \u2014 OpenAPI 0.3.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "UNKNOWN remains distinct from failure; provider evidence never authorizes a duplicate submission from the UI.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "Local mock tests/operations.test.ts; tests/e2e/operations.spec.ts. Actual Laravel and staging unmapped.",
+    "domain_permissions": [
+      "operations.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/operations"
+  },
+  {
+    "page": "O05",
+    "method": "GET",
+    "target_path": "/ops/v1/operations/{id}",
+    "schema_status": "executable D2a target \u2014 OpenAPI 0.3.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "UNKNOWN remains distinct from failure; provider evidence never authorizes a duplicate submission from the UI.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "Local mock tests/operations.test.ts; tests/e2e/operations.spec.ts. Actual Laravel and staging unmapped.",
+    "domain_permissions": [
+      "operations.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/operations"
+  },
+  {
+    "page": "O06",
+    "method": "GET",
+    "target_path": "/ops/v1/collections",
+    "schema_status": "executable OpenAPI 0.5.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Duplicate receipt shows one financial effect; unmatched receipts link to the exception workflow.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "rails.test.ts; rails.spec.ts; actual backend mapping pending",
+    "domain_permissions": [
+      "operations.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/collections"
+  },
+  {
+    "page": "O06",
+    "method": "GET",
+    "target_path": "/ops/v1/collections/{id}",
+    "schema_status": "executable OpenAPI 0.5.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Duplicate receipt shows one financial effect; unmatched receipts link to the exception workflow.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "rails.test.ts; rails.spec.ts; actual backend mapping pending",
+    "domain_permissions": [
+      "operations.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/collections"
+  },
+  {
+    "page": "O07",
+    "method": "GET",
+    "target_path": "/ops/v1/payouts",
+    "schema_status": "executable OpenAPI 0.5.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Accepted timeout displays UNKNOWN and preserves hold; confirmed failure evidence is required for release.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "rails.test.ts; rails.spec.ts; actual backend mapping pending",
+    "domain_permissions": [
+      "operations.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/payouts"
+  },
+  {
+    "page": "O07",
+    "method": "GET",
+    "target_path": "/ops/v1/payouts/{id}",
+    "schema_status": "executable OpenAPI 0.5.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Accepted timeout displays UNKNOWN and preserves hold; confirmed failure evidence is required for release.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "rails.test.ts; rails.spec.ts; actual backend mapping pending",
+    "domain_permissions": [
+      "operations.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/payouts"
+  },
+  {
+    "page": "O08",
+    "method": "GET",
+    "target_path": "/ops/v1/holds",
+    "schema_status": "executable D2b read target \u2014 OpenAPI 0.4.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "UNKNOWN-aware expiry is explained; terminal transitions cannot be forced in the browser.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "tests/ledger.test.ts; tests/ledger-ui.test.tsx; tests/e2e/ledger.spec.ts \u2014 mock only",
+    "domain_permissions": [
+      "holds.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/holds"
+  },
+  {
+    "page": "O08",
+    "method": "GET",
+    "target_path": "/ops/v1/holds/{id}",
+    "schema_status": "executable D2b read target \u2014 OpenAPI 0.4.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "UNKNOWN-aware expiry is explained; terminal transitions cannot be forced in the browser.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "tests/ledger.test.ts; tests/ledger-ui.test.tsx; tests/e2e/ledger.spec.ts \u2014 mock only",
+    "domain_permissions": [
+      "holds.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/holds"
+  },
+  {
+    "page": "O09",
+    "method": "GET",
+    "target_path": "/ops/v1/journals",
+    "schema_status": "executable D2b read target \u2014 OpenAPI 0.4.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "PT-15 journals link to the maker-checker case; no edit or delete affordance exists; line totals balance.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "tests/ledger.test.ts; tests/ledger-ui.test.tsx; tests/e2e/ledger.spec.ts \u2014 mock only",
+    "domain_permissions": [
+      "ledger.view",
+      "reports.export"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/ledger"
+  },
+  {
+    "page": "O09",
+    "method": "GET",
+    "target_path": "/ops/v1/journals/{id}",
+    "schema_status": "executable D2b read target \u2014 OpenAPI 0.4.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "PT-15 journals link to the maker-checker case; no edit or delete affordance exists; line totals balance.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "tests/ledger.test.ts; tests/ledger-ui.test.tsx; tests/e2e/ledger.spec.ts \u2014 mock only",
+    "domain_permissions": [
+      "ledger.view",
+      "reports.export"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/ledger"
+  },
+  {
+    "page": "O10",
+    "method": "GET",
+    "target_path": "/ops/v1/reconciliation/runs",
+    "schema_status": "executable OpenAPI 0.7.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Re-ingestion identity and amended-file exceptions are visible; prior completed runs are not overwritten.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "reports.test.ts; financial-export-ui.test.tsx; reports.spec.ts; actual backend mapping pending",
+    "domain_permissions": [
+      "reconciliation.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/reconciliation"
+  },
+  {
+    "page": "O10",
+    "method": "GET",
+    "target_path": "/ops/v1/reconciliation/runs/{id}",
+    "schema_status": "executable OpenAPI 0.7.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Re-ingestion identity and amended-file exceptions are visible; prior completed runs are not overwritten.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "reports.test.ts; financial-export-ui.test.tsx; reports.spec.ts; actual backend mapping pending",
+    "domain_permissions": [
+      "reconciliation.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/reconciliation"
+  },
+  {
+    "page": "O11",
+    "method": "GET",
+    "target_path": "/ops/v1/reconciliation/exceptions",
+    "schema_status": "target draft \u2014 refine in D5",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Resolution does not silently post money; approved closure records evidence and the linked journal if a separate adjustment occurred.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "reconciliation.view",
+      "reconciliation.resolve.propose"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "CASE01",
+      "CASE02",
+      "CASE03"
+    ],
+    "frontend_route": "/ops/reconciliation/exceptions"
+  },
+  {
+    "page": "O11",
+    "method": "POST",
+    "target_path": "/ops/v1/cases",
+    "schema_status": "target draft \u2014 refine in D5",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Resolution does not silently post money; approved closure records evidence and the linked journal if a separate adjustment occurred.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "reconciliation.view",
+      "reconciliation.resolve.propose"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "CASE01",
+      "CASE02",
+      "CASE03"
+    ],
+    "frontend_route": "/ops/reconciliation/exceptions"
+  },
+  {
+    "page": "O12",
+    "method": "GET",
+    "target_path": "/ops/v1/cases",
+    "schema_status": "target draft \u2014 refine in D5",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Own-case approval is denied server-side; concurrent decisions have one winner; BLOCKED is shown as retryable separately from approval.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "cases.approve",
+      "cases.reject"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "CASE01",
+      "CASE02",
+      "CASE03"
+    ],
+    "frontend_route": "/ops/approvals"
+  },
+  {
+    "page": "O12",
+    "method": "POST",
+    "target_path": "/ops/v1/cases/{id}/decisions",
+    "schema_status": "target draft \u2014 refine in D5",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Own-case approval is denied server-side; concurrent decisions have one winner; BLOCKED is shown as retryable separately from approval.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "cases.approve",
+      "cases.reject"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "CASE01",
+      "CASE02",
+      "CASE03"
+    ],
+    "frontend_route": "/ops/approvals"
+  },
+  {
+    "page": "O13",
+    "method": "GET",
+    "target_path": "/ops/v1/adjustment-templates",
+    "schema_status": "target draft \u2014 refine in D5",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Cannot choose arbitrary accounts outside template policy; furaia_app execution posts balanced journal with reference to case; gate denial creates no journal.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "adjustments.propose"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "CASE01",
+      "CASE02",
+      "CASE03",
+      "MONEY05"
+    ],
+    "frontend_route": "/ops/adjustments"
+  },
+  {
+    "page": "O13",
+    "method": "POST",
+    "target_path": "/ops/v1/adjustments/preview",
+    "schema_status": "target draft \u2014 refine in D5",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Cannot choose arbitrary accounts outside template policy; furaia_app execution posts balanced journal with reference to case; gate denial creates no journal.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "adjustments.propose"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "CASE01",
+      "CASE02",
+      "CASE03",
+      "MONEY05"
+    ],
+    "frontend_route": "/ops/adjustments"
+  },
+  {
+    "page": "O13",
+    "method": "POST",
+    "target_path": "/ops/v1/cases",
+    "schema_status": "target draft \u2014 refine in D5",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Cannot choose arbitrary accounts outside template policy; furaia_app execution posts balanced journal with reference to case; gate denial creates no journal.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "adjustments.propose"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "CASE01",
+      "CASE02",
+      "CASE03",
+      "MONEY05"
+    ],
+    "frontend_route": "/ops/adjustments"
+  },
+  {
+    "page": "O14",
+    "method": "GET",
+    "target_path": "/ops/v1/disputes",
+    "schema_status": "target draft \u2014 refine in D5",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Dispute closure does not mutate a posted journal; customer sees only customer-visible notes.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "disputes.manage (target extension)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/disputes"
+  },
+  {
+    "page": "O14",
+    "method": "POST",
+    "target_path": "/ops/v1/disputes/{id}/responses",
+    "schema_status": "target draft \u2014 refine in D5",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Dispute closure does not mutate a posted journal; customer sees only customer-visible notes.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "disputes.manage (target extension)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/disputes"
+  },
+  {
+    "page": "O15",
+    "method": "GET",
+    "target_path": "/ops/v1/partners",
+    "schema_status": "target draft \u2014 refine in D5",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Applicant cannot activate own production; approval is bound to environment, app and reviewed scope set.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "partners.review"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "CASE01",
+      "CASE02",
+      "CASE03"
+    ],
+    "frontend_route": "/ops/partners"
+  },
+  {
+    "page": "O15",
+    "method": "GET",
+    "target_path": "/ops/v1/partners/{id}",
+    "schema_status": "target draft \u2014 refine in D5",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Applicant cannot activate own production; approval is bound to environment, app and reviewed scope set.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "partners.review"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "CASE01",
+      "CASE02",
+      "CASE03"
+    ],
+    "frontend_route": "/ops/partners"
+  },
+  {
+    "page": "O15",
+    "method": "POST",
+    "target_path": "/ops/v1/cases",
+    "schema_status": "target draft \u2014 refine in D5",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Applicant cannot activate own production; approval is bound to environment, app and reviewed scope set.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "partners.review"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "CASE01",
+      "CASE02",
+      "CASE03"
+    ],
+    "frontend_route": "/ops/partners"
+  },
+  {
+    "page": "O16",
+    "method": "GET",
+    "target_path": "/ops/v1/products",
+    "schema_status": "target draft \u2014 refine in D5",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Existing accounts retain their effective policy until a controlled migration; previewed changes show affected scope.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "policies.propose"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "CASE01",
+      "CASE02",
+      "CASE03"
+    ],
+    "frontend_route": "/ops/products"
+  },
+  {
+    "page": "O16",
+    "method": "GET",
+    "target_path": "/ops/v1/policies",
+    "schema_status": "target draft \u2014 refine in D5",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Existing accounts retain their effective policy until a controlled migration; previewed changes show affected scope.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "policies.propose"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "CASE01",
+      "CASE02",
+      "CASE03"
+    ],
+    "frontend_route": "/ops/products"
+  },
+  {
+    "page": "O16",
+    "method": "POST",
+    "target_path": "/ops/v1/cases",
+    "schema_status": "target draft \u2014 refine in D5",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Existing accounts retain their effective policy until a controlled migration; previewed changes show affected scope.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "policies.propose"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "CASE01",
+      "CASE02",
+      "CASE03"
+    ],
+    "frontend_route": "/ops/products"
+  },
+  {
+    "page": "O17",
+    "method": "GET",
+    "target_path": "/ops/v1/reports",
+    "schema_status": "executable OpenAPI 0.7.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Close blockers are explicit; report is reproducible from its snapshot; no UI click labels an unresolved day reconciled.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "reports.test.ts; financial-export-ui.test.tsx; reports.spec.ts; actual backend mapping pending",
+    "domain_permissions": [
+      "reports.view",
+      "reports.export"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "REPORT01"
+    ],
+    "frontend_route": "/ops/reports"
+  },
+  {
+    "page": "O17",
+    "method": "POST",
+    "target_path": "/ops/v1/exports",
+    "schema_status": "executable OpenAPI 0.7.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Close blockers are explicit; report is reproducible from its snapshot; no UI click labels an unresolved day reconciled.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "reports.test.ts; financial-export-ui.test.tsx; reports.spec.ts; actual backend mapping pending",
+    "domain_permissions": [
+      "reports.view",
+      "reports.export"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "REPORT01"
+    ],
+    "frontend_route": "/ops/reports"
+  },
+  {
+    "page": "O17",
+    "method": "GET",
+    "target_path": "/ops/v1/daily-close",
+    "schema_status": "executable OpenAPI 0.7.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Close blockers are explicit; report is reproducible from its snapshot; no UI click labels an unresolved day reconciled.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "reports.test.ts; financial-export-ui.test.tsx; reports.spec.ts; actual backend mapping pending",
+    "domain_permissions": [
+      "reports.view",
+      "reports.export"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "REPORT01"
+    ],
+    "frontend_route": "/ops/reports"
+  },
+  {
+    "page": "O18",
+    "method": "GET",
+    "target_path": "/ops/v1/audit-events",
+    "schema_status": "executable OpenAPI 0.8.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Integrity status distinguishes verified, failed and not checked; absence of an audit row for a rolled-back transaction is not fabricated.",
+    "idempotency": "Idempotency-Key for verification, acknowledgement and export creates; exact reviewed payload retained",
+    "versioning": "expected_version for acknowledgements/preferences; expected_head_digest and pinned sequence range for verification",
+    "evidence": "controls.test.ts; controls-ui.test.tsx; controls.spec.ts; real mapping pending",
+    "domain_permissions": [
+      "audit.view",
+      "audit.verify",
+      "audit.export",
+      "reports.export"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/audit"
+  },
+  {
+    "page": "O18",
+    "method": "GET",
+    "target_path": "/ops/v1/audit-verifications",
+    "schema_status": "executable OpenAPI 0.8.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Integrity status distinguishes verified, failed and not checked; absence of an audit row for a rolled-back transaction is not fabricated.",
+    "idempotency": "Idempotency-Key for verification, acknowledgement and export creates; exact reviewed payload retained",
+    "versioning": "expected_version for acknowledgements/preferences; expected_head_digest and pinned sequence range for verification",
+    "evidence": "controls.test.ts; controls-ui.test.tsx; controls.spec.ts; real mapping pending",
+    "domain_permissions": [
+      "audit.view",
+      "audit.verify",
+      "audit.export",
+      "reports.export"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/audit"
+  },
+  {
+    "page": "O19",
+    "method": "GET",
+    "target_path": "/ops/v1/staff",
+    "schema_status": "executable OpenAPI 0.8.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "No self-elevation; disabled staff cannot reuse sessions; external SSO groups alone do not authorize money.",
+    "idempotency": "Idempotency-Key for verification, acknowledgement and export creates; exact reviewed payload retained",
+    "versioning": "expected_version for acknowledgements/preferences; expected_head_digest and pinned sequence range for verification",
+    "evidence": "controls.test.ts; controls-ui.test.tsx; controls.spec.ts; real mapping pending",
+    "domain_permissions": [
+      "staff.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/staff"
+  },
+  {
+    "page": "O19",
+    "method": "GET",
+    "target_path": "/ops/v1/role-matrix",
+    "schema_status": "executable OpenAPI 0.8.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "No self-elevation; disabled staff cannot reuse sessions; external SSO groups alone do not authorize money.",
+    "idempotency": "Idempotency-Key for verification, acknowledgement and export creates; exact reviewed payload retained",
+    "versioning": "expected_version for acknowledgements/preferences; expected_head_digest and pinned sequence range for verification",
+    "evidence": "controls.test.ts; controls-ui.test.tsx; controls.spec.ts; real mapping pending",
+    "domain_permissions": [
+      "staff.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/staff"
+  },
+  {
+    "page": "O19",
+    "method": "POST",
+    "target_path": "/ops/v1/cases",
+    "schema_status": "target draft \u2014 governed actions D5",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "No self-elevation; disabled staff cannot reuse sessions; external SSO groups alone do not authorize money.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "staff.access.propose"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/staff"
+  },
+  {
+    "page": "O20",
+    "method": "GET",
+    "target_path": "/ops/v1/integrations",
+    "schema_status": "executable OpenAPI 0.8.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Fake and certified adapters are unmistakable; secrets are represented by references only.",
+    "idempotency": "Idempotency-Key for verification, acknowledgement and export creates; exact reviewed payload retained",
+    "versioning": "expected_version for acknowledgements/preferences; expected_head_digest and pinned sequence range for verification",
+    "evidence": "controls.test.ts; controls-ui.test.tsx; controls.spec.ts; real mapping pending",
+    "domain_permissions": [
+      "integrations.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/integrations"
+  },
+  {
+    "page": "O20",
+    "method": "GET",
+    "target_path": "/ops/v1/integrations/{id}",
+    "schema_status": "executable OpenAPI 0.8.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Fake and certified adapters are unmistakable; secrets are represented by references only.",
+    "idempotency": "Idempotency-Key for verification, acknowledgement and export creates; exact reviewed payload retained",
+    "versioning": "expected_version for acknowledgements/preferences; expected_head_digest and pinned sequence range for verification",
+    "evidence": "controls.test.ts; controls-ui.test.tsx; controls.spec.ts; real mapping pending",
+    "domain_permissions": [
+      "integrations.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/integrations"
+  },
+  {
+    "page": "O21",
+    "method": "GET",
+    "target_path": "/ops/v1/alerts",
+    "schema_status": "executable OpenAPI 0.8.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Delivery acceptance is not labeled email receipt; repeated alarms deduplicate and recovery history remains.",
+    "idempotency": "Idempotency-Key for verification, acknowledgement and export creates; exact reviewed payload retained",
+    "versioning": "expected_version for acknowledgements/preferences; expected_head_digest and pinned sequence range for verification",
+    "evidence": "controls.test.ts; controls-ui.test.tsx; controls.spec.ts; real mapping pending",
+    "domain_permissions": [
+      "alerts.view",
+      "alerts.acknowledge"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/alerts"
+  },
+  {
+    "page": "O21",
+    "method": "POST",
+    "target_path": "/ops/v1/alerts/{id}/acknowledgements",
+    "schema_status": "executable OpenAPI 0.8.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Delivery acceptance is not labeled email receipt; repeated alarms deduplicate and recovery history remains.",
+    "idempotency": "Idempotency-Key for verification, acknowledgement and export creates; exact reviewed payload retained",
+    "versioning": "expected_version for acknowledgements/preferences; expected_head_digest and pinned sequence range for verification",
+    "evidence": "controls.test.ts; controls-ui.test.tsx; controls.spec.ts; real mapping pending",
+    "domain_permissions": [
+      "alerts.view",
+      "alerts.acknowledge"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/alerts"
+  },
+  {
+    "page": "O22",
+    "method": "GET",
+    "target_path": "/ops/v1/governance",
+    "schema_status": "executable OpenAPI 0.8.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Production-impacting changes do not bypass external two-person deployment approval; stale true is never shown as permission to write.",
+    "idempotency": "Idempotency-Key for verification, acknowledgement and export creates; exact reviewed payload retained",
+    "versioning": "expected_version for acknowledgements/preferences; expected_head_digest and pinned sequence range for verification",
+    "evidence": "controls.test.ts; controls-ui.test.tsx; controls.spec.ts; real mapping pending",
+    "domain_permissions": [
+      "governance.view",
+      "settings.view",
+      "preferences.manage"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/settings"
+  },
+  {
+    "page": "O22",
+    "method": "GET",
+    "target_path": "/ops/v1/settings",
+    "schema_status": "executable OpenAPI 0.8.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Production-impacting changes do not bypass external two-person deployment approval; stale true is never shown as permission to write.",
+    "idempotency": "Idempotency-Key for verification, acknowledgement and export creates; exact reviewed payload retained",
+    "versioning": "expected_version for acknowledgements/preferences; expected_head_digest and pinned sequence range for verification",
+    "evidence": "controls.test.ts; controls-ui.test.tsx; controls.spec.ts; real mapping pending",
+    "domain_permissions": [
+      "governance.view",
+      "settings.view",
+      "preferences.manage"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/settings"
+  },
+  {
+    "page": "O22",
+    "method": "PATCH",
+    "target_path": "/ops/v1/me/preferences",
+    "schema_status": "executable OpenAPI 0.8.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Production-impacting changes do not bypass external two-person deployment approval; stale true is never shown as permission to write.",
+    "idempotency": "Idempotency-Key for verification, acknowledgement and export creates; exact reviewed payload retained",
+    "versioning": "expected_version for acknowledgements/preferences; expected_head_digest and pinned sequence range for verification",
+    "evidence": "controls.test.ts; controls-ui.test.tsx; controls.spec.ts; real mapping pending",
+    "domain_permissions": [
+      "governance.view",
+      "settings.view",
+      "preferences.manage"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/settings"
+  },
+  {
+    "page": "C01",
+    "method": "POST",
+    "target_path": "/v1/registrations",
+    "schema_status": "executable OpenAPI 0.10.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Server-managed separate customer session or anonymous registration continuation; current CSRF/capability/context/ownership/environment; current policy/version; clean owned evidence; server-only review transitions; immutable idempotency and one transactional zero-balance opening. Public responses must not enumerate accounts. Real enforcement not proven by mock tests.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "D3a tests/account-holder.test.ts; tests/account-holder-ui.test.tsx; tests/e2e/account-holder.spec.ts",
+    "domain_permissions": [
+      "public anti-abuse"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/register"
+  },
+  {
+    "page": "C01",
+    "method": "POST",
+    "target_path": "/v1/registrations/{id}/verify",
+    "schema_status": "executable OpenAPI 0.10.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Server-managed separate customer session or anonymous registration continuation; current CSRF/capability/context/ownership/environment; current policy/version; clean owned evidence; server-only review transitions; immutable idempotency and one transactional zero-balance opening. Public responses must not enumerate accounts. Real enforcement not proven by mock tests.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "D3a tests/account-holder.test.ts; tests/account-holder-ui.test.tsx; tests/e2e/account-holder.spec.ts",
+    "domain_permissions": [
+      "public anti-abuse"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/register"
+  },
+  {
+    "page": "C02",
+    "method": "POST",
+    "target_path": "/v1/sessions",
+    "schema_status": "target draft \u2014 refine in D3",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Recovery cannot bypass identity proof or reveal account existence; sessions are invalidated according to policy.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "public identity challenge"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/login"
+  },
+  {
+    "page": "C02",
+    "method": "POST",
+    "target_path": "/v1/recovery-requests",
+    "schema_status": "executable OpenAPI 0.11.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Secure anonymous HttpOnly continuation cookie, Origin/anti-forgery and distributed limits; unpredictable contact proof plus independent identity review; no existence leak; expiry/current version; completion consumes approved proof, revokes previous principal sessions and atomically creates one session under exact replay. Used/revoked session cannot be revived by replay.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "owned anonymous continuation; approved server identity review"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/login"
+  },
+  {
+    "page": "C03",
+    "method": "GET",
+    "target_path": "/v1/me/verification",
+    "schema_status": "executable OpenAPI 0.10.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Server-managed separate customer session or anonymous registration continuation; current CSRF/capability/context/ownership/environment; current policy/version; clean owned evidence; server-only review transitions; immutable idempotency and one transactional zero-balance opening. Public responses must not enumerate accounts. Real enforcement not proven by mock tests.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "D3a tests/account-holder.test.ts; tests/account-holder-ui.test.tsx; tests/e2e/account-holder.spec.ts",
+    "domain_permissions": [
+      "kyc.submit"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "KYC01"
+    ],
+    "frontend_route": "/app/verification"
+  },
+  {
+    "page": "C03",
+    "method": "POST",
+    "target_path": "/v1/me/verification/submissions",
+    "schema_status": "executable OpenAPI 0.10.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Server-managed separate customer session or anonymous registration continuation; current CSRF/capability/context/ownership/environment; current policy/version; clean owned evidence; server-only review transitions; immutable idempotency and one transactional zero-balance opening. Public responses must not enumerate accounts. Real enforcement not proven by mock tests.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "D3a tests/account-holder.test.ts; tests/account-holder-ui.test.tsx; tests/e2e/account-holder.spec.ts",
+    "domain_permissions": [
+      "kyc.submit"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "KYC01"
+    ],
+    "frontend_route": "/app/verification"
+  },
+  {
+    "page": "C04",
+    "method": "GET",
+    "target_path": "/v1/products/eligible",
+    "schema_status": "executable OpenAPI 0.10.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Server-managed separate customer session or anonymous registration continuation; current CSRF/capability/context/ownership/environment; current policy/version; clean owned evidence; server-only review transitions; immutable idempotency and one transactional zero-balance opening. Public responses must not enumerate accounts. Real enforcement not proven by mock tests.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "D3a tests/account-holder.test.ts; tests/account-holder-ui.test.tsx; tests/e2e/account-holder.spec.ts",
+    "domain_permissions": [
+      "accounts.open"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "ACCOUNT01"
+    ],
+    "frontend_route": "/app/accounts/open"
+  },
+  {
+    "page": "C04",
+    "method": "POST",
+    "target_path": "/v1/accounts",
+    "schema_status": "executable OpenAPI 0.10.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Server-managed separate customer session or anonymous registration continuation; current CSRF/capability/context/ownership/environment; current policy/version; clean owned evidence; server-only review transitions; immutable idempotency and one transactional zero-balance opening. Public responses must not enumerate accounts. Real enforcement not proven by mock tests.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "D3a tests/account-holder.test.ts; tests/account-holder-ui.test.tsx; tests/e2e/account-holder.spec.ts",
+    "domain_permissions": [
+      "accounts.open"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "ACCOUNT01"
+    ],
+    "frontend_route": "/app/accounts/open"
+  },
+  {
+    "page": "C05",
+    "method": "GET",
+    "target_path": "/v1/me",
+    "schema_status": "executable OpenAPI 0.11.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Customer profile.manage, own principal/context/environment, masked contact/document; no inferred consent mutation.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "profile.manage"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app"
+  },
+  {
+    "page": "C05",
+    "method": "GET",
+    "target_path": "/v1/me/overview",
+    "schema_status": "executable OpenAPI 0.10.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Server-managed separate customer session or anonymous registration continuation; current CSRF/capability/context/ownership/environment; current policy/version; clean owned evidence; server-only review transitions; immutable idempotency and one transactional zero-balance opening. Public responses must not enumerate accounts. Real enforcement not proven by mock tests.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "D3a tests/account-holder.test.ts; tests/account-holder-ui.test.tsx; tests/e2e/account-holder.spec.ts",
+    "domain_permissions": [
+      "balances.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app"
+  },
+  {
+    "page": "C06",
+    "method": "GET",
+    "target_path": "/v1/accounts",
+    "schema_status": "executable OpenAPI 0.10.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Server-managed separate customer session or anonymous registration continuation; current CSRF/capability/context/ownership/environment; current policy/version; clean owned evidence; server-only review transitions; immutable idempotency and one transactional zero-balance opening. Public responses must not enumerate accounts. Real enforcement not proven by mock tests.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "D3a tests/account-holder.test.ts; tests/account-holder-ui.test.tsx; tests/e2e/account-holder.spec.ts",
+    "domain_permissions": [
+      "balances.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/accounts"
+  },
+  {
+    "page": "C06",
+    "method": "GET",
+    "target_path": "/v1/accounts/{id}",
+    "schema_status": "executable OpenAPI 0.10.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Server-managed separate customer session or anonymous registration continuation; current CSRF/capability/context/ownership/environment; current policy/version; clean owned evidence; server-only review transitions; immutable idempotency and one transactional zero-balance opening. Public responses must not enumerate accounts. Real enforcement not proven by mock tests.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "D3a tests/account-holder.test.ts; tests/account-holder-ui.test.tsx; tests/e2e/account-holder.spec.ts",
+    "domain_permissions": [
+      "balances.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/accounts"
+  },
+  {
+    "page": "C06",
+    "method": "POST",
+    "target_path": "/v1/accounts/{id}/closure-requests",
+    "schema_status": "executable OpenAPI 0.11.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Enforce ownership/current grants/scope/environment. Closure request needs CSRF, account-bound fresh accounts.close.request step-up, current eligibility/policy and immutable idempotency. Recheck posted funds, held funds, obligations and account state before approval. Never mutate journals/balances; server-owned review only. Scope or authorization changes invalidate prior grants.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "accounts.close.request on requests; balances.view on reads"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/accounts"
+  },
+  {
+    "page": "C07",
+    "method": "GET",
+    "target_path": "/v1/operations",
+    "schema_status": "target draft \u2014 refine in D4",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Accepted is not labeled completed; exact replay restores the original operation; internal audit and staff notes are absent.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "operations.view (customer target extension)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/activity"
+  },
+  {
+    "page": "C07",
+    "method": "GET",
+    "target_path": "/v1/operations/{id}",
+    "schema_status": "target draft \u2014 refine in D4",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Accepted is not labeled completed; exact replay restores the original operation; internal audit and staff notes are absent.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "operations.view (customer target extension)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/activity"
+  },
+  {
+    "page": "C08",
+    "method": "POST",
+    "target_path": "/v1/transfers/internal/preview",
+    "schema_status": "target draft \u2014 refine in D4",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Server validates ownership and recipient policy; insufficient funds, changed-body conflict and gate-disabled cases preserve safe retry.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "transfers.create"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "MONEY01",
+      "MONEY02",
+      "MONEY03",
+      "MONEY04",
+      "AUTH04"
+    ],
+    "frontend_route": "/app/payments/transfer"
+  },
+  {
+    "page": "C08",
+    "method": "POST",
+    "target_path": "/v1/transfers/internal",
+    "schema_status": "target draft \u2014 refine in D4",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Server validates ownership and recipient policy; insufficient funds, changed-body conflict and gate-disabled cases preserve safe retry.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "transfers.create"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "MONEY01",
+      "MONEY02",
+      "MONEY03",
+      "MONEY04",
+      "AUTH04"
+    ],
+    "frontend_route": "/app/payments/transfer"
+  },
+  {
+    "page": "C09",
+    "method": "GET",
+    "target_path": "/v1/beneficiaries",
+    "schema_status": "target draft \u2014 refine in D4",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "No beneficiary ownership leakage; destination validation results expire under policy; archived records remain in historical receipts.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "beneficiaries.manage (target extension)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/beneficiaries"
+  },
+  {
+    "page": "C09",
+    "method": "POST",
+    "target_path": "/v1/beneficiaries",
+    "schema_status": "target draft \u2014 refine in D4",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "No beneficiary ownership leakage; destination validation results expire under policy; archived records remain in historical receipts.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "beneficiaries.manage (target extension)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/beneficiaries"
+  },
+  {
+    "page": "C09",
+    "method": "PATCH",
+    "target_path": "/v1/beneficiaries/{id}",
+    "schema_status": "target draft \u2014 refine in D4",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "No beneficiary ownership leakage; destination validation results expire under policy; archived records remain in historical receipts.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "beneficiaries.manage (target extension)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/beneficiaries"
+  },
+  {
+    "page": "C10",
+    "method": "POST",
+    "target_path": "/v1/collections/preview",
+    "schema_status": "target draft \u2014 refine in D4",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Do not mark account credited before confirmed receipt and posting; instruction is labeled sandbox where fake rail is active.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "collections.create"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "MONEY01",
+      "MONEY02",
+      "MONEY03",
+      "MONEY04",
+      "AUTH04"
+    ],
+    "frontend_route": "/app/payments/collect"
+  },
+  {
+    "page": "C10",
+    "method": "POST",
+    "target_path": "/v1/collections",
+    "schema_status": "target draft \u2014 refine in D4",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Do not mark account credited before confirmed receipt and posting; instruction is labeled sandbox where fake rail is active.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "collections.create"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "MONEY01",
+      "MONEY02",
+      "MONEY03",
+      "MONEY04",
+      "AUTH04"
+    ],
+    "frontend_route": "/app/payments/collect"
+  },
+  {
+    "page": "C11",
+    "method": "POST",
+    "target_path": "/v1/payouts/preview",
+    "schema_status": "target draft \u2014 refine in D4",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "UNKNOWN locks retry guidance to status inquiry; no release or resend button; state changes follow provider evidence.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "payouts.create"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "MONEY01",
+      "MONEY02",
+      "MONEY03",
+      "MONEY04",
+      "AUTH04"
+    ],
+    "frontend_route": "/app/payments/payout"
+  },
+  {
+    "page": "C11",
+    "method": "POST",
+    "target_path": "/v1/payouts",
+    "schema_status": "target draft \u2014 refine in D4",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "UNKNOWN locks retry guidance to status inquiry; no release or resend button; state changes follow provider evidence.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "payouts.create"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "MONEY01",
+      "MONEY02",
+      "MONEY03",
+      "MONEY04",
+      "AUTH04"
+    ],
+    "frontend_route": "/app/payments/payout"
+  },
+  {
+    "page": "C12",
+    "method": "GET",
+    "target_path": "/v1/accounts/{id}/statements",
+    "schema_status": "target draft \u2014 refine in D3",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Statement balance is posted balance and holds are separately explained; export download authorization is checked.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "statements.export"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "REPORT01"
+    ],
+    "frontend_route": "/app/statements"
+  },
+  {
+    "page": "C12",
+    "method": "POST",
+    "target_path": "/v1/exports",
+    "schema_status": "target draft \u2014 refine in D3",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Statement balance is posted balance and holds are separately explained; export download authorization is checked.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "statements.export"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "REPORT01"
+    ],
+    "frontend_route": "/app/statements"
+  },
+  {
+    "page": "C13",
+    "method": "GET",
+    "target_path": "/v1/me",
+    "schema_status": "executable OpenAPI 0.11.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Customer profile.manage, own principal/context/environment, masked contact/document; no inferred consent mutation.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "profile.manage"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/profile"
+  },
+  {
+    "page": "C13",
+    "method": "PATCH",
+    "target_path": "/v1/me/preferences",
+    "schema_status": "target draft \u2014 refine in D3",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Mandatory processing notices are separate from optional marketing; identity changes do not silently erase KYC evidence.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "profile.manage"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/profile"
+  },
+  {
+    "page": "C13",
+    "method": "POST",
+    "target_path": "/v1/me/profile-change-requests",
+    "schema_status": "target draft \u2014 refine in D3",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Mandatory processing notices are separate from optional marketing; identity changes do not silently erase KYC evidence.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "profile.manage"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/profile"
+  },
+  {
+    "page": "C14",
+    "method": "GET",
+    "target_path": "/v1/me/sessions",
+    "schema_status": "target draft \u2014 refine in D3",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Current and other-session revocation are explicit; secrets and recovery codes display once and never enter telemetry.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "security.manage (target extension)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/security"
+  },
+  {
+    "page": "C14",
+    "method": "DELETE",
+    "target_path": "/v1/me/sessions/{id}",
+    "schema_status": "target draft \u2014 refine in D3",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Current and other-session revocation are explicit; secrets and recovery codes display once and never enter telemetry.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "security.manage (target extension)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/security"
+  },
+  {
+    "page": "C14",
+    "method": "POST",
+    "target_path": "/v1/me/mfa/enrollments",
+    "schema_status": "target draft \u2014 refine in D3",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Current and other-session revocation are explicit; secrets and recovery codes display once and never enter telemetry.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "security.manage (target extension)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/security"
+  },
+  {
+    "page": "C15",
+    "method": "GET",
+    "target_path": "/v1/me/notifications",
+    "schema_status": "target draft \u2014 refine in D3",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "A deep link repeats resource authorization; notifications never reveal complete beneficiary or identity data.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "notifications.manage (target extension)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/notifications"
+  },
+  {
+    "page": "C15",
+    "method": "PATCH",
+    "target_path": "/v1/me/notifications/{id}",
+    "schema_status": "target draft \u2014 refine in D3",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "A deep link repeats resource authorization; notifications never reveal complete beneficiary or identity data.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "notifications.manage (target extension)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/notifications"
+  },
+  {
+    "page": "C16",
+    "method": "GET",
+    "target_path": "/v1/me/support-tickets",
+    "schema_status": "target draft \u2014 refine in D3",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Duplicate disputes are linked; staff-only notes remain hidden; submission never triggers an automatic reversal.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "disputes.create"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/support"
+  },
+  {
+    "page": "C16",
+    "method": "POST",
+    "target_path": "/v1/disputes",
+    "schema_status": "target draft \u2014 refine in D3",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Duplicate disputes are linked; staff-only notes remain hidden; submission never triggers an automatic reversal.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "disputes.create"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/support"
+  },
+  {
+    "page": "C16",
+    "method": "POST",
+    "target_path": "/v1/me/support-tickets",
+    "schema_status": "target draft \u2014 refine in D3",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Duplicate disputes are linked; staff-only notes remain hidden; submission never triggers an automatic reversal.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "disputes.create"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/support"
+  },
+  {
+    "page": "C17",
+    "method": "GET",
+    "target_path": "/v1/businesses/{id}/members",
+    "schema_status": "target draft \u2014 refine in D9",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Only granted businesses appear; owner cannot remove the last authorized owner without a replacement procedure.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "business.team.manage (target extension)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/business/team"
+  },
+  {
+    "page": "C17",
+    "method": "POST",
+    "target_path": "/v1/businesses/{id}/invitations",
+    "schema_status": "target draft \u2014 refine in D9",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Only granted businesses appear; owner cannot remove the last authorized owner without a replacement procedure.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "business.team.manage (target extension)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/business/team"
+  },
+  {
+    "page": "C18",
+    "method": "GET",
+    "target_path": "/v1/businesses/{id}/payment-cases",
+    "schema_status": "target draft \u2014 refine in D9",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Maker cannot approve own payment; frozen amount and beneficiary cannot change after approval; funds and gate are checked at execution.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "business.payments.propose",
+      "business.payments.approve (target extensions)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "CASE01",
+      "CASE02",
+      "CASE03"
+    ],
+    "frontend_route": "/app/business/approvals"
+  },
+  {
+    "page": "C18",
+    "method": "POST",
+    "target_path": "/v1/businesses/{id}/payment-cases",
+    "schema_status": "target draft \u2014 refine in D9",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Maker cannot approve own payment; frozen amount and beneficiary cannot change after approval; funds and gate are checked at execution.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "business.payments.propose",
+      "business.payments.approve (target extensions)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "CASE01",
+      "CASE02",
+      "CASE03"
+    ],
+    "frontend_route": "/app/business/approvals"
+  },
+  {
+    "page": "P01",
+    "method": "POST",
+    "target_path": "/partner/v1/registrations",
+    "schema_status": "target draft \u2014 refine in D6",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "No production credential is issued; automated abuse controls and duplicate-safe registration apply.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "public anti-abuse"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/register"
+  },
+  {
+    "page": "P01",
+    "method": "POST",
+    "target_path": "/partner/v1/registrations/{id}/verify",
+    "schema_status": "target draft \u2014 refine in D6",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "No production credential is issued; automated abuse controls and duplicate-safe registration apply.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "public anti-abuse"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/register"
+  },
+  {
+    "page": "P02",
+    "method": "POST",
+    "target_path": "/partner/v1/sessions",
+    "schema_status": "target draft \u2014 refine in D6",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Human session is not usable as a machine API key; organization switching clears prior data.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "public identity challenge"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/login"
+  },
+  {
+    "page": "P02",
+    "method": "POST",
+    "target_path": "/partner/v1/recovery-requests",
+    "schema_status": "target draft \u2014 refine in D6",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Human session is not usable as a machine API key; organization switching clears prior data.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "public identity challenge"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/login"
+  },
+  {
+    "page": "P03",
+    "method": "POST",
+    "target_path": "/partner/v1/organizations",
+    "schema_status": "target draft \u2014 refine in D6",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Organization is unique under verified registration identity; owner membership is transactional with organization creation.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "organization.manage"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/onboarding/organization"
+  },
+  {
+    "page": "P03",
+    "method": "PATCH",
+    "target_path": "/partner/v1/organizations/{id}",
+    "schema_status": "target draft \u2014 refine in D6",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Organization is unique under verified registration identity; owner membership is transactional with organization creation.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "organization.manage"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/onboarding/organization"
+  },
+  {
+    "page": "P04",
+    "method": "GET",
+    "target_path": "/partner/v1/organizations/{id}/verification",
+    "schema_status": "target draft \u2014 refine in D6",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Evidence checklist is server-policy-driven; personal owner data is restricted to designated roles.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "organization.manage"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "KYC01"
+    ],
+    "frontend_route": "/partners/onboarding/verification"
+  },
+  {
+    "page": "P04",
+    "method": "POST",
+    "target_path": "/partner/v1/organizations/{id}/verification/submissions",
+    "schema_status": "target draft \u2014 refine in D6",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Evidence checklist is server-policy-driven; personal owner data is restricted to designated roles.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "organization.manage"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "KYC01"
+    ],
+    "frontend_route": "/partners/onboarding/verification"
+  },
+  {
+    "page": "P05",
+    "method": "GET",
+    "target_path": "/partner/v1/organizations/{id}/onboarding",
+    "schema_status": "target draft \u2014 refine in D6",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Status separates contact verified, KYB approved, sandbox active and production approved.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "organization.manage"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/onboarding/status"
+  },
+  {
+    "page": "P06",
+    "method": "GET",
+    "target_path": "/partner/v1/overview",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Production metrics never appear in sandbox scope; financial totals require finance permission.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "usage.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners"
+  },
+  {
+    "page": "P07",
+    "method": "GET",
+    "target_path": "/partner/v1/applications",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Approved scope expansion requires review; archive does not delete transaction evidence.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "applications.manage"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/applications"
+  },
+  {
+    "page": "P07",
+    "method": "POST",
+    "target_path": "/partner/v1/applications",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Approved scope expansion requires review; archive does not delete transaction evidence.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "applications.manage"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/applications"
+  },
+  {
+    "page": "P07",
+    "method": "PATCH",
+    "target_path": "/partner/v1/applications/{id}",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Approved scope expansion requires review; archive does not delete transaction evidence.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "applications.manage"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/applications"
+  },
+  {
+    "page": "P08",
+    "method": "GET",
+    "target_path": "/partner/v1/credentials",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Secrets are stored as hashes where verification permits; private signing material is KMS-managed if asymmetric; revoked keys fail immediately under published propagation bound.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "credentials.issue",
+      "credentials.rotate",
+      "credentials.revoke"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "KEY01",
+      "PARTNER01"
+    ],
+    "frontend_route": "/partners/credentials"
+  },
+  {
+    "page": "P08",
+    "method": "POST",
+    "target_path": "/partner/v1/credentials",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Secrets are stored as hashes where verification permits; private signing material is KMS-managed if asymmetric; revoked keys fail immediately under published propagation bound.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "credentials.issue",
+      "credentials.rotate",
+      "credentials.revoke"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "KEY01",
+      "PARTNER01"
+    ],
+    "frontend_route": "/partners/credentials"
+  },
+  {
+    "page": "P08",
+    "method": "POST",
+    "target_path": "/partner/v1/credentials/{id}/rotations",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Secrets are stored as hashes where verification permits; private signing material is KMS-managed if asymmetric; revoked keys fail immediately under published propagation bound.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "credentials.issue",
+      "credentials.rotate",
+      "credentials.revoke"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "KEY01",
+      "PARTNER01"
+    ],
+    "frontend_route": "/partners/credentials"
+  },
+  {
+    "page": "P08",
+    "method": "DELETE",
+    "target_path": "/partner/v1/credentials/{id}",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Secrets are stored as hashes where verification permits; private signing material is KMS-managed if asymmetric; revoked keys fail immediately under published propagation bound.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "credentials.issue",
+      "credentials.rotate",
+      "credentials.revoke"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "KEY01",
+      "PARTNER01"
+    ],
+    "frontend_route": "/partners/credentials"
+  },
+  {
+    "page": "P09",
+    "method": "GET",
+    "target_path": "/developers/openapi/{version}",
+    "schema_status": "target draft \u2014 refine in D6",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Docs are generated from reviewed contract; unsupported operations are excluded or explicitly future; no real secret in examples.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "public reviewed contracts"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "DOC01"
+    ],
+    "frontend_route": "/developers/api"
+  },
+  {
+    "page": "P09",
+    "method": "GET",
+    "target_path": "/developers/changelog",
+    "schema_status": "target draft \u2014 refine in D6",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Docs are generated from reviewed contract; unsupported operations are excluded or explicitly future; no real secret in examples.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "public reviewed contracts"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "DOC01"
+    ],
+    "frontend_route": "/developers/api"
+  },
+  {
+    "page": "P11",
+    "method": "POST",
+    "target_path": "/partner/v1/sandbox/runs",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Reset cannot reach production; scenario tests cover success, reject, timeout, duplicates and reordered callbacks.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "sandbox.run (target extension)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/sandbox"
+  },
+  {
+    "page": "P11",
+    "method": "GET",
+    "target_path": "/partner/v1/sandbox/runs/{id}",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Reset cannot reach production; scenario tests cover success, reject, timeout, duplicates and reordered callbacks.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "sandbox.run (target extension)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/sandbox"
+  },
+  {
+    "page": "P12",
+    "method": "GET",
+    "target_path": "/partner/v1/webhook-endpoints",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Server rejects private/link-local/metadata targets and rechecks resolved destinations on send; signing secrets show once.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "webhooks.manage"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "HOOK01",
+      "HOOK02",
+      "HOOK03"
+    ],
+    "frontend_route": "/partners/webhooks"
+  },
+  {
+    "page": "P12",
+    "method": "POST",
+    "target_path": "/partner/v1/webhook-endpoints",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Server rejects private/link-local/metadata targets and rechecks resolved destinations on send; signing secrets show once.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "webhooks.manage"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "HOOK01",
+      "HOOK02",
+      "HOOK03"
+    ],
+    "frontend_route": "/partners/webhooks"
+  },
+  {
+    "page": "P12",
+    "method": "PATCH",
+    "target_path": "/partner/v1/webhook-endpoints/{id}",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Server rejects private/link-local/metadata targets and rechecks resolved destinations on send; signing secrets show once.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "webhooks.manage"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "HOOK01",
+      "HOOK02",
+      "HOOK03"
+    ],
+    "frontend_route": "/partners/webhooks"
+  },
+  {
+    "page": "P13",
+    "method": "GET",
+    "target_path": "/partner/v1/webhook-deliveries",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Replay retains event identity and cannot create a second financial effect; logs omit credentials and excessive response bodies.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "webhooks.manage"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "HOOK01",
+      "HOOK02",
+      "HOOK03"
+    ],
+    "frontend_route": "/partners/webhooks/deliveries"
+  },
+  {
+    "page": "P13",
+    "method": "POST",
+    "target_path": "/partner/v1/webhook-deliveries/{id}/replays",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Replay retains event identity and cannot create a second financial effect; logs omit credentials and excessive response bodies.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "webhooks.manage"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "HOOK01",
+      "HOOK02",
+      "HOOK03"
+    ],
+    "frontend_route": "/partners/webhooks/deliveries"
+  },
+  {
+    "page": "P14",
+    "method": "GET",
+    "target_path": "/partner/v1/request-logs",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "No request secret/raw KYC body is returned; cross-partner identifiers cannot resolve.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "logs.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/logs"
+  },
+  {
+    "page": "P14",
+    "method": "GET",
+    "target_path": "/partner/v1/request-logs/{id}",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "No request secret/raw KYC body is returned; cross-partner identifiers cannot resolve.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "logs.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/logs"
+  },
+  {
+    "page": "P15",
+    "method": "GET",
+    "target_path": "/partner/v1/usage",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Charts reflect enforcement counters; UI does not interpret advisory headers as proof of real quotas.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "usage.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/usage"
+  },
+  {
+    "page": "P15",
+    "method": "GET",
+    "target_path": "/partner/v1/quotas",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Charts reflect enforcement counters; UI does not interpret advisory headers as proof of real quotas.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "usage.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/usage"
+  },
+  {
+    "page": "P15",
+    "method": "POST",
+    "target_path": "/partner/v1/quota-change-requests",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Charts reflect enforcement counters; UI does not interpret advisory headers as proof of real quotas.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "usage.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/usage"
+  },
+  {
+    "page": "P16",
+    "method": "GET",
+    "target_path": "/partner/v1/customers",
+    "schema_status": "target draft \u2014 refine in D8",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Partner cannot claim any Furaia customer by knowing an ID; creation does not bypass KYC/account eligibility.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "customers.delegated.view (target extension)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/customers"
+  },
+  {
+    "page": "P16",
+    "method": "GET",
+    "target_path": "/partner/v1/accounts",
+    "schema_status": "target draft \u2014 refine in D8",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Partner cannot claim any Furaia customer by knowing an ID; creation does not bypass KYC/account eligibility.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "customers.delegated.view (target extension)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/customers"
+  },
+  {
+    "page": "P16",
+    "method": "POST",
+    "target_path": "/partner/v1/customer-onboarding-requests",
+    "schema_status": "target draft \u2014 refine in D8",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Partner cannot claim any Furaia customer by knowing an ID; creation does not bypass KYC/account eligibility.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "customers.delegated.view (target extension)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/customers"
+  },
+  {
+    "page": "P17",
+    "method": "GET",
+    "target_path": "/partner/v1/operations",
+    "schema_status": "target draft \u2014 refine in D8",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Partner operations use R1 command handlers with scoped delegation, not an independent ledger write path.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "finance.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "MONEY01",
+      "MONEY02",
+      "MONEY03",
+      "MONEY04",
+      "AUTH04"
+    ],
+    "frontend_route": "/partners/transactions"
+  },
+  {
+    "page": "P17",
+    "method": "GET",
+    "target_path": "/partner/v1/operations/{id}",
+    "schema_status": "target draft \u2014 refine in D8",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Partner operations use R1 command handlers with scoped delegation, not an independent ledger write path.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "finance.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "MONEY01",
+      "MONEY02",
+      "MONEY03",
+      "MONEY04",
+      "AUTH04"
+    ],
+    "frontend_route": "/partners/transactions"
+  },
+  {
+    "page": "P18",
+    "method": "GET",
+    "target_path": "/partner/v1/reports",
+    "schema_status": "target draft \u2014 refine in D8",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Settlement account data is contract-scoped; raw safeguarding bank statements are never exposed by default.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "finance.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "REPORT01"
+    ],
+    "frontend_route": "/partners/reconciliation"
+  },
+  {
+    "page": "P18",
+    "method": "POST",
+    "target_path": "/partner/v1/discrepancies",
+    "schema_status": "target draft \u2014 refine in D8",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Settlement account data is contract-scoped; raw safeguarding bank statements are never exposed by default.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "finance.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "REPORT01"
+    ],
+    "frontend_route": "/partners/reconciliation"
+  },
+  {
+    "page": "P19",
+    "method": "GET",
+    "target_path": "/partner/v1/members",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "No user grants a capability they cannot administer; last owner and self-elevation controls are enforced.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "team.manage"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/team"
+  },
+  {
+    "page": "P19",
+    "method": "POST",
+    "target_path": "/partner/v1/invitations",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "No user grants a capability they cannot administer; last owner and self-elevation controls are enforced.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "team.manage"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/team"
+  },
+  {
+    "page": "P19",
+    "method": "PATCH",
+    "target_path": "/partner/v1/members/{id}",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "No user grants a capability they cannot administer; last owner and self-elevation controls are enforced.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "team.manage"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/team"
+  },
+  {
+    "page": "P20",
+    "method": "GET",
+    "target_path": "/partner/v1/commercial-terms",
+    "schema_status": "target draft \u2014 refine in D8",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Before a billing engine exists show approved commercial terms without invented invoice totals; billed usage is traceable and adjustments auditable.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "finance.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/billing"
+  },
+  {
+    "page": "P20",
+    "method": "GET",
+    "target_path": "/partner/v1/invoices",
+    "schema_status": "target draft \u2014 refine in D8",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Before a billing engine exists show approved commercial terms without invented invoice totals; billed usage is traceable and adjustments auditable.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "finance.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/billing"
+  },
+  {
+    "page": "P21",
+    "method": "POST",
+    "target_path": "/partner/v1/production-access-requests",
+    "schema_status": "target draft \u2014 refine in D8",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Sandbox keys never become production keys; activation requires staff approval and backend readiness gate.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "production_access.submit"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "PARTNER02"
+    ],
+    "frontend_route": "/partners/production-access"
+  },
+  {
+    "page": "P21",
+    "method": "GET",
+    "target_path": "/partner/v1/production-access-requests/{id}",
+    "schema_status": "target draft \u2014 refine in D8",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Sandbox keys never become production keys; activation requires staff approval and backend readiness gate.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "production_access.submit"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "PARTNER02"
+    ],
+    "frontend_route": "/partners/production-access"
+  },
+  {
+    "page": "P22",
+    "method": "GET",
+    "target_path": "/partner/v1/support-tickets",
+    "schema_status": "target draft \u2014 refine in D8",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "No promise of an SLA is fabricated; response target is read from signed commercial policy.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "support.manage (target extension)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/support"
+  },
+  {
+    "page": "P22",
+    "method": "POST",
+    "target_path": "/partner/v1/support-tickets",
+    "schema_status": "target draft \u2014 refine in D8",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "No promise of an SLA is fabricated; response target is read from signed commercial policy.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "support.manage (target extension)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/support"
+  },
+  {
+    "page": "P22",
+    "method": "GET",
+    "target_path": "/partner/v1/service-status",
+    "schema_status": "target draft \u2014 refine in D8",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "No promise of an SLA is fabricated; response target is read from signed commercial policy.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "support.manage (target extension)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/support"
+  },
+  {
+    "page": "P23",
+    "method": "GET",
+    "target_path": "/partner/v1/security",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Partner audit contains only own organization events; policy edits cannot lock out all recovery authority without verification.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "organization.security.manage",
+      "audit.view (partner target extensions)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/security"
+  },
+  {
+    "page": "P23",
+    "method": "GET",
+    "target_path": "/partner/v1/audit-events",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Partner audit contains only own organization events; policy edits cannot lock out all recovery authority without verification.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "organization.security.manage",
+      "audit.view (partner target extensions)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/security"
+  },
+  {
+    "page": "P23",
+    "method": "DELETE",
+    "target_path": "/partner/v1/sessions/{id}",
+    "schema_status": "target draft \u2014 refine in D7",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Partner audit contains only own organization events; policy edits cannot lock out all recovery authority without verification.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": null,
+    "domain_permissions": [
+      "organization.security.manage",
+      "audit.view (partner target extensions)"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/partners/security"
+  },
+  {
+    "page": "O18",
+    "method": "GET",
+    "target_path": "/ops/v1/audit-events/{id}",
+    "schema_status": "executable OpenAPI 0.8.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Integrity status distinguishes verified, failed and not checked; absence of an audit row for a rolled-back transaction is not fabricated.",
+    "idempotency": "Idempotency-Key for verification, acknowledgement and export creates; exact reviewed payload retained",
+    "versioning": "expected_version for acknowledgements/preferences; expected_head_digest and pinned sequence range for verification",
+    "evidence": "controls.test.ts; controls-ui.test.tsx; controls.spec.ts; real mapping pending",
+    "domain_permissions": [
+      "audit.view",
+      "audit.verify",
+      "audit.export",
+      "reports.export"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/audit"
+  },
+  {
+    "page": "O18",
+    "method": "POST",
+    "target_path": "/ops/v1/audit-verifications",
+    "schema_status": "executable OpenAPI 0.8.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Integrity status distinguishes verified, failed and not checked; absence of an audit row for a rolled-back transaction is not fabricated.",
+    "idempotency": "Idempotency-Key for verification, acknowledgement and export creates; exact reviewed payload retained",
+    "versioning": "expected_version for acknowledgements/preferences; expected_head_digest and pinned sequence range for verification",
+    "evidence": "controls.test.ts; controls-ui.test.tsx; controls.spec.ts; real mapping pending",
+    "domain_permissions": [
+      "audit.view",
+      "audit.verify",
+      "audit.export",
+      "reports.export"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/audit"
+  },
+  {
+    "page": "O18",
+    "method": "GET",
+    "target_path": "/ops/v1/audit-verifications/{id}",
+    "schema_status": "executable OpenAPI 0.8.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Integrity status distinguishes verified, failed and not checked; absence of an audit row for a rolled-back transaction is not fabricated.",
+    "idempotency": "Idempotency-Key for verification, acknowledgement and export creates; exact reviewed payload retained",
+    "versioning": "expected_version for acknowledgements/preferences; expected_head_digest and pinned sequence range for verification",
+    "evidence": "controls.test.ts; controls-ui.test.tsx; controls.spec.ts; real mapping pending",
+    "domain_permissions": [
+      "audit.view",
+      "audit.verify",
+      "audit.export",
+      "reports.export"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/audit"
+  },
+  {
+    "page": "O18",
+    "method": "POST",
+    "target_path": "/ops/v1/exports",
+    "schema_status": "executable OpenAPI 0.8.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Integrity status distinguishes verified, failed and not checked; absence of an audit row for a rolled-back transaction is not fabricated.",
+    "idempotency": "Idempotency-Key for verification, acknowledgement and export creates; exact reviewed payload retained",
+    "versioning": "expected_version for acknowledgements/preferences; expected_head_digest and pinned sequence range for verification",
+    "evidence": "controls.test.ts; controls-ui.test.tsx; controls.spec.ts; real mapping pending",
+    "domain_permissions": [
+      "audit.view",
+      "audit.verify",
+      "audit.export",
+      "reports.export"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/audit"
+  },
+  {
+    "page": "O18",
+    "method": "GET",
+    "target_path": "/ops/v1/exports/{id}",
+    "schema_status": "executable OpenAPI 0.8.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Integrity status distinguishes verified, failed and not checked; absence of an audit row for a rolled-back transaction is not fabricated.",
+    "idempotency": "Idempotency-Key for verification, acknowledgement and export creates; exact reviewed payload retained",
+    "versioning": "expected_version for acknowledgements/preferences; expected_head_digest and pinned sequence range for verification",
+    "evidence": "controls.test.ts; controls-ui.test.tsx; controls.spec.ts; real mapping pending",
+    "domain_permissions": [
+      "audit.view",
+      "audit.verify",
+      "audit.export",
+      "reports.export"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/audit"
+  },
+  {
+    "page": "O18",
+    "method": "GET",
+    "target_path": "/ops/v1/exports/{id}/download",
+    "schema_status": "executable OpenAPI 0.8.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Integrity status distinguishes verified, failed and not checked; absence of an audit row for a rolled-back transaction is not fabricated.",
+    "idempotency": "Idempotency-Key for verification, acknowledgement and export creates; exact reviewed payload retained",
+    "versioning": "expected_version for acknowledgements/preferences; expected_head_digest and pinned sequence range for verification",
+    "evidence": "controls.test.ts; controls-ui.test.tsx; controls.spec.ts; real mapping pending",
+    "domain_permissions": [
+      "audit.view",
+      "audit.verify",
+      "audit.export",
+      "reports.export"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/audit"
+  },
+  {
+    "page": "O19",
+    "method": "GET",
+    "target_path": "/ops/v1/staff/{id}",
+    "schema_status": "executable OpenAPI 0.8.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "No self-elevation; disabled staff cannot reuse sessions; external SSO groups alone do not authorize money.",
+    "idempotency": "Idempotency-Key for verification, acknowledgement and export creates; exact reviewed payload retained",
+    "versioning": "expected_version for acknowledgements/preferences; expected_head_digest and pinned sequence range for verification",
+    "evidence": "controls.test.ts; controls-ui.test.tsx; controls.spec.ts; real mapping pending",
+    "domain_permissions": [
+      "staff.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/staff"
+  },
+  {
+    "page": "O21",
+    "method": "GET",
+    "target_path": "/ops/v1/alerts/{id}",
+    "schema_status": "executable OpenAPI 0.8.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Delivery acceptance is not labeled email receipt; repeated alarms deduplicate and recovery history remains.",
+    "idempotency": "Idempotency-Key for verification, acknowledgement and export creates; exact reviewed payload retained",
+    "versioning": "expected_version for acknowledgements/preferences; expected_head_digest and pinned sequence range for verification",
+    "evidence": "controls.test.ts; controls-ui.test.tsx; controls.spec.ts; real mapping pending",
+    "domain_permissions": [
+      "alerts.view",
+      "alerts.acknowledge"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/ops/alerts"
+  },
+  {
+    "page": "O01",
+    "method": "GET",
+    "target_path": "/ops/v1/outbox",
+    "schema_status": "executable OpenAPI 0.9.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Server enforces staff identity, active legal entity/environment and current outbox.view. Cursor binds session/principal/authorization version/scope/environment/filters and expires in 30 minutes. Detail existence does not leak across entities. Event delivery evidence cannot authorize a payment retry.",
+    "idempotency": "read-only; linked alert acknowledgement retains its immutable key/payload contract",
+    "versioning": "source snapshots and latest reconciliation version per currency",
+    "evidence": "tests/overview.test.ts; tests/overview-ui.test.tsx; tests/e2e/overview.spec.ts",
+    "domain_permissions": [
+      "outbox.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "OVERVIEW_PARITY",
+      "OVERVIEW_FRESHNESS",
+      "OVERVIEW_RESTRICTED",
+      "OUTBOX_SCOPE"
+    ],
+    "frontend_route": "/ops/outbox"
+  },
+  {
+    "page": "O01",
+    "method": "GET",
+    "target_path": "/ops/v1/outbox/{id}",
+    "schema_status": "executable OpenAPI 0.9.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Server enforces staff identity, active legal entity/environment and current outbox.view. Cursor binds session/principal/authorization version/scope/environment/filters and expires in 30 minutes. Detail existence does not leak across entities. Event delivery evidence cannot authorize a payment retry.",
+    "idempotency": "read-only; linked alert acknowledgement retains its immutable key/payload contract",
+    "versioning": "source snapshots and latest reconciliation version per currency",
+    "evidence": "tests/overview.test.ts; tests/overview-ui.test.tsx; tests/e2e/overview.spec.ts",
+    "domain_permissions": [
+      "outbox.view"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "OVERVIEW_PARITY",
+      "OVERVIEW_FRESHNESS",
+      "OVERVIEW_RESTRICTED",
+      "OUTBOX_SCOPE"
+    ],
+    "frontend_route": "/ops/outbox/:id"
+  },
+  {
+    "page": "C01",
+    "method": "GET",
+    "target_path": "/v1/registration-policy",
+    "schema_status": "executable OpenAPI 0.10.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Server-managed separate customer session or anonymous registration continuation; current CSRF/capability/context/ownership/environment; current policy/version; clean owned evidence; server-only review transitions; immutable idempotency and one transactional zero-balance opening. Public responses must not enumerate accounts. Real enforcement not proven by mock tests.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "D3a tests/account-holder.test.ts; tests/account-holder-ui.test.tsx; tests/e2e/account-holder.spec.ts",
+    "domain_permissions": [
+      "public anti-abuse"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/register"
+  },
+  {
+    "page": "C01",
+    "method": "GET",
+    "target_path": "/v1/registrations/current",
+    "schema_status": "executable OpenAPI 0.10.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Server-managed separate customer session or anonymous registration continuation; current CSRF/capability/context/ownership/environment; current policy/version; clean owned evidence; server-only review transitions; immutable idempotency and one transactional zero-balance opening. Public responses must not enumerate accounts. Real enforcement not proven by mock tests.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "D3a tests/account-holder.test.ts; tests/account-holder-ui.test.tsx; tests/e2e/account-holder.spec.ts",
+    "domain_permissions": [
+      "public anti-abuse"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/register"
+  },
+  {
+    "page": "C01",
+    "method": "POST",
+    "target_path": "/v1/registrations/{id}/challenges",
+    "schema_status": "executable OpenAPI 0.10.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Server-managed separate customer session or anonymous registration continuation; current CSRF/capability/context/ownership/environment; current policy/version; clean owned evidence; server-only review transitions; immutable idempotency and one transactional zero-balance opening. Public responses must not enumerate accounts. Real enforcement not proven by mock tests.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "D3a tests/account-holder.test.ts; tests/account-holder-ui.test.tsx; tests/e2e/account-holder.spec.ts",
+    "domain_permissions": [
+      "public anti-abuse"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02"
+    ],
+    "frontend_route": "/app/register"
+  },
+  {
+    "page": "C03",
+    "method": "PATCH",
+    "target_path": "/v1/me/verification",
+    "schema_status": "executable OpenAPI 0.10.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Server-managed separate customer session or anonymous registration continuation; current CSRF/capability/context/ownership/environment; current policy/version; clean owned evidence; server-only review transitions; immutable idempotency and one transactional zero-balance opening. Public responses must not enumerate accounts. Real enforcement not proven by mock tests.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "D3a tests/account-holder.test.ts; tests/account-holder-ui.test.tsx; tests/e2e/account-holder.spec.ts",
+    "domain_permissions": [
+      "kyc.submit"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "KYC01"
+    ],
+    "frontend_route": "/app/verification"
+  },
+  {
+    "page": "C03",
+    "method": "POST",
+    "target_path": "/v1/me/verification/evidence",
+    "schema_status": "executable OpenAPI 0.10.0",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + capability + resource ownership/delegation + tenant/legal entity/organization + environment",
+    "privileged_enforcement": "Server-managed separate customer session or anonymous registration continuation; current CSRF/capability/context/ownership/environment; current policy/version; clean owned evidence; server-only review transitions; immutable idempotency and one transactional zero-balance opening. Public responses must not enumerate accounts. Real enforcement not proven by mock tests.",
+    "idempotency": "required for money/account opening; endpoint-specific for other creates",
+    "versioning": "expected_version for edits/decisions",
+    "evidence": "D3a tests/account-holder.test.ts; tests/account-holder-ui.test.tsx; tests/e2e/account-holder.spec.ts",
+    "domain_permissions": [
+      "kyc.submit"
+    ],
+    "scenario_ids": [
+      "AUTH01",
+      "AUTH02",
+      "AUTH03",
+      "UI01",
+      "UI02",
+      "KYC01"
+    ],
+    "frontend_route": "/app/verification"
+  },
+  {
+    "page": "C02",
+    "method": "GET",
+    "target_path": "/v1/recovery-requests/current",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + active owned/granted customer context + environment; anonymous cookie for recovery",
+    "idempotency": "Immutable scoped key/payload on writes; one-effect exact replay",
+    "versioning": "Server-owned expected_version and current policy",
+    "evidence": "tests/customer-lifecycle.test.ts; tests/customer-lifecycle-ui.test.tsx; tests/e2e/customer-lifecycle.spec.ts",
+    "schema_status": "executable OpenAPI 0.11.0",
+    "privileged_enforcement": "Secure anonymous HttpOnly continuation cookie, Origin/anti-forgery and distributed limits; unpredictable contact proof plus independent identity review; no existence leak; expiry/current version; completion consumes approved proof, revokes previous principal sessions and atomically creates one session under exact replay. Used/revoked session cannot be revived by replay.",
+    "domain_permissions": [
+      "owned anonymous continuation; approved server identity review"
+    ]
+  },
+  {
+    "page": "C02",
+    "method": "GET",
+    "target_path": "/v1/recovery-requests/{id}",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + active owned/granted customer context + environment; anonymous cookie for recovery",
+    "idempotency": "Immutable scoped key/payload on writes; one-effect exact replay",
+    "versioning": "Server-owned expected_version and current policy",
+    "evidence": "tests/customer-lifecycle.test.ts; tests/customer-lifecycle-ui.test.tsx; tests/e2e/customer-lifecycle.spec.ts",
+    "schema_status": "executable OpenAPI 0.11.0",
+    "privileged_enforcement": "Secure anonymous HttpOnly continuation cookie, Origin/anti-forgery and distributed limits; unpredictable contact proof plus independent identity review; no existence leak; expiry/current version; completion consumes approved proof, revokes previous principal sessions and atomically creates one session under exact replay. Used/revoked session cannot be revived by replay.",
+    "domain_permissions": [
+      "owned anonymous continuation; approved server identity review"
+    ]
+  },
+  {
+    "page": "C02",
+    "method": "POST",
+    "target_path": "/v1/recovery-requests/{id}/challenges",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + active owned/granted customer context + environment; anonymous cookie for recovery",
+    "idempotency": "Immutable scoped key/payload on writes; one-effect exact replay",
+    "versioning": "Server-owned expected_version and current policy",
+    "evidence": "tests/customer-lifecycle.test.ts; tests/customer-lifecycle-ui.test.tsx; tests/e2e/customer-lifecycle.spec.ts",
+    "schema_status": "executable OpenAPI 0.11.0",
+    "privileged_enforcement": "Secure anonymous HttpOnly continuation cookie, Origin/anti-forgery and distributed limits; unpredictable contact proof plus independent identity review; no existence leak; expiry/current version; completion consumes approved proof, revokes previous principal sessions and atomically creates one session under exact replay. Used/revoked session cannot be revived by replay.",
+    "domain_permissions": [
+      "owned anonymous continuation; approved server identity review"
+    ]
+  },
+  {
+    "page": "C02",
+    "method": "POST",
+    "target_path": "/v1/recovery-requests/{id}/verifications",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + active owned/granted customer context + environment; anonymous cookie for recovery",
+    "idempotency": "Immutable scoped key/payload on writes; one-effect exact replay",
+    "versioning": "Server-owned expected_version and current policy",
+    "evidence": "tests/customer-lifecycle.test.ts; tests/customer-lifecycle-ui.test.tsx; tests/e2e/customer-lifecycle.spec.ts",
+    "schema_status": "executable OpenAPI 0.11.0",
+    "privileged_enforcement": "Secure anonymous HttpOnly continuation cookie, Origin/anti-forgery and distributed limits; unpredictable contact proof plus independent identity review; no existence leak; expiry/current version; completion consumes approved proof, revokes previous principal sessions and atomically creates one session under exact replay. Used/revoked session cannot be revived by replay.",
+    "domain_permissions": [
+      "owned anonymous continuation; approved server identity review"
+    ]
+  },
+  {
+    "page": "C02",
+    "method": "POST",
+    "target_path": "/v1/recovery-requests/{id}/completions",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + active owned/granted customer context + environment; anonymous cookie for recovery",
+    "idempotency": "Immutable scoped key/payload on writes; one-effect exact replay",
+    "versioning": "Server-owned expected_version and current policy",
+    "evidence": "tests/customer-lifecycle.test.ts; tests/customer-lifecycle-ui.test.tsx; tests/e2e/customer-lifecycle.spec.ts",
+    "schema_status": "executable OpenAPI 0.11.0",
+    "privileged_enforcement": "Secure anonymous HttpOnly continuation cookie, Origin/anti-forgery and distributed limits; unpredictable contact proof plus independent identity review; no existence leak; expiry/current version; completion consumes approved proof, revokes previous principal sessions and atomically creates one session under exact replay. Used/revoked session cannot be revived by replay.",
+    "domain_permissions": [
+      "owned anonymous continuation; approved server identity review"
+    ]
+  },
+  {
+    "page": "C06",
+    "method": "GET",
+    "target_path": "/v1/accounts/{id}/closure-eligibility",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + active owned/granted customer context + environment; anonymous cookie for recovery",
+    "idempotency": "Immutable scoped key/payload on writes; one-effect exact replay",
+    "versioning": "Server-owned expected_version and current policy",
+    "evidence": "tests/customer-lifecycle.test.ts; tests/customer-lifecycle-ui.test.tsx; tests/e2e/customer-lifecycle.spec.ts",
+    "schema_status": "executable OpenAPI 0.11.0",
+    "privileged_enforcement": "Enforce ownership/current grants/scope/environment. Closure request needs CSRF, account-bound fresh accounts.close.request step-up, current eligibility/policy and immutable idempotency. Recheck posted funds, held funds, obligations and account state before approval. Never mutate journals/balances; server-owned review only. Scope or authorization changes invalidate prior grants.",
+    "domain_permissions": [
+      "accounts.close.request on requests; balances.view on reads"
+    ]
+  },
+  {
+    "page": "C06",
+    "method": "GET",
+    "target_path": "/v1/accounts/{id}/closure-requests",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + active owned/granted customer context + environment; anonymous cookie for recovery",
+    "idempotency": "Immutable scoped key/payload on writes; one-effect exact replay",
+    "versioning": "Server-owned expected_version and current policy",
+    "evidence": "tests/customer-lifecycle.test.ts; tests/customer-lifecycle-ui.test.tsx; tests/e2e/customer-lifecycle.spec.ts",
+    "schema_status": "executable OpenAPI 0.11.0",
+    "privileged_enforcement": "Enforce ownership/current grants/scope/environment. Closure request needs CSRF, account-bound fresh accounts.close.request step-up, current eligibility/policy and immutable idempotency. Recheck posted funds, held funds, obligations and account state before approval. Never mutate journals/balances; server-owned review only. Scope or authorization changes invalidate prior grants.",
+    "domain_permissions": [
+      "accounts.close.request on requests; balances.view on reads"
+    ]
+  },
+  {
+    "page": "C06",
+    "method": "GET",
+    "target_path": "/v1/closure-requests/{id}",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + active owned/granted customer context + environment; anonymous cookie for recovery",
+    "idempotency": "Immutable scoped key/payload on writes; one-effect exact replay",
+    "versioning": "Server-owned expected_version and current policy",
+    "evidence": "tests/customer-lifecycle.test.ts; tests/customer-lifecycle-ui.test.tsx; tests/e2e/customer-lifecycle.spec.ts",
+    "schema_status": "executable OpenAPI 0.11.0",
+    "privileged_enforcement": "Enforce ownership/current grants/scope/environment. Closure request needs CSRF, account-bound fresh accounts.close.request step-up, current eligibility/policy and immutable idempotency. Recheck posted funds, held funds, obligations and account state before approval. Never mutate journals/balances; server-owned review only. Scope or authorization changes invalidate prior grants.",
+    "domain_permissions": [
+      "accounts.close.request on requests; balances.view on reads"
+    ]
+  },
+  {
+    "page": "C06",
+    "method": "POST",
+    "target_path": "/v1/step-up/challenges",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + active owned/granted customer context + environment; anonymous cookie for recovery",
+    "idempotency": "Immutable scoped key/payload on writes; one-effect exact replay",
+    "versioning": "Server-owned expected_version and current policy",
+    "evidence": "tests/customer-lifecycle.test.ts; tests/customer-lifecycle-ui.test.tsx; tests/e2e/customer-lifecycle.spec.ts",
+    "schema_status": "executable OpenAPI 0.11.0",
+    "privileged_enforcement": "Enforce ownership/current grants/scope/environment. Closure request needs CSRF, account-bound fresh accounts.close.request step-up, current eligibility/policy and immutable idempotency. Recheck posted funds, held funds, obligations and account state before approval. Never mutate journals/balances; server-owned review only. Scope or authorization changes invalidate prior grants.",
+    "domain_permissions": [
+      "accounts.close.request on requests; balances.view on reads"
+    ]
+  },
+  {
+    "page": "C06",
+    "method": "POST",
+    "target_path": "/v1/step-up/challenges/{id}/verifications",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + active owned/granted customer context + environment; anonymous cookie for recovery",
+    "idempotency": "Immutable scoped key/payload on writes; one-effect exact replay",
+    "versioning": "Server-owned expected_version and current policy",
+    "evidence": "tests/customer-lifecycle.test.ts; tests/customer-lifecycle-ui.test.tsx; tests/e2e/customer-lifecycle.spec.ts",
+    "schema_status": "executable OpenAPI 0.11.0",
+    "privileged_enforcement": "Enforce ownership/current grants/scope/environment. Closure request needs CSRF, account-bound fresh accounts.close.request step-up, current eligibility/policy and immutable idempotency. Recheck posted funds, held funds, obligations and account state before approval. Never mutate journals/balances; server-owned review only. Scope or authorization changes invalidate prior grants.",
+    "domain_permissions": [
+      "accounts.close.request on requests; balances.view on reads"
+    ]
+  },
+  {
+    "page": "C05",
+    "method": "GET",
+    "target_path": "/v1/accounts/{id}/cards",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + active owned/granted customer context + environment; anonymous cookie for recovery",
+    "idempotency": "Immutable scoped key/payload on writes; one-effect exact replay",
+    "versioning": "Server-owned expected_version and current policy",
+    "evidence": "tests/customer-lifecycle.test.ts; tests/customer-lifecycle-ui.test.tsx; tests/e2e/customer-lifecycle.spec.ts",
+    "schema_status": "draft \u2014 user-requested cards extension; D4 card slice",
+    "privileged_enforcement": "Issuer/product eligibility, ownership, cards.view/manage, environment and PCI-safe masked projection. Issuance requires independent server approval; no invented PAN/CVC or approved network/issuer. Privileged actions require server controls and version/idempotency.",
+    "domain_permissions": [
+      "cards.view/cards.manage (target extensions)"
+    ]
+  },
+  {
+    "page": "C06",
+    "method": "GET",
+    "target_path": "/v1/accounts/{id}/cards",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + active owned/granted customer context + environment; anonymous cookie for recovery",
+    "idempotency": "Immutable scoped key/payload on writes; one-effect exact replay",
+    "versioning": "Server-owned expected_version and current policy",
+    "evidence": "tests/customer-lifecycle.test.ts; tests/customer-lifecycle-ui.test.tsx; tests/e2e/customer-lifecycle.spec.ts",
+    "schema_status": "draft \u2014 user-requested cards extension; D4 card slice",
+    "privileged_enforcement": "Issuer/product eligibility, ownership, cards.view/manage, environment and PCI-safe masked projection. Issuance requires independent server approval; no invented PAN/CVC or approved network/issuer. Privileged actions require server controls and version/idempotency.",
+    "domain_permissions": [
+      "cards.view/cards.manage (target extensions)"
+    ]
+  },
+  {
+    "page": "C06",
+    "method": "GET",
+    "target_path": "/v1/cards/{id}",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + active owned/granted customer context + environment; anonymous cookie for recovery",
+    "idempotency": "Immutable scoped key/payload on writes; one-effect exact replay",
+    "versioning": "Server-owned expected_version and current policy",
+    "evidence": "tests/customer-lifecycle.test.ts; tests/customer-lifecycle-ui.test.tsx; tests/e2e/customer-lifecycle.spec.ts",
+    "schema_status": "draft \u2014 user-requested cards extension; D4 card slice",
+    "privileged_enforcement": "Issuer/product eligibility, ownership, cards.view/manage, environment and PCI-safe masked projection. Issuance requires independent server approval; no invented PAN/CVC or approved network/issuer. Privileged actions require server controls and version/idempotency.",
+    "domain_permissions": [
+      "cards.view/cards.manage (target extensions)"
+    ]
+  },
+  {
+    "page": "C06",
+    "method": "POST",
+    "target_path": "/v1/accounts/{id}/card-requests",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + active owned/granted customer context + environment; anonymous cookie for recovery",
+    "idempotency": "Immutable scoped key/payload on writes; one-effect exact replay",
+    "versioning": "Server-owned expected_version and current policy",
+    "evidence": "tests/customer-lifecycle.test.ts; tests/customer-lifecycle-ui.test.tsx; tests/e2e/customer-lifecycle.spec.ts",
+    "schema_status": "draft \u2014 user-requested cards extension; D4 card slice",
+    "privileged_enforcement": "Issuer/product eligibility, ownership, cards.view/manage, environment and PCI-safe masked projection. Issuance requires independent server approval; no invented PAN/CVC or approved network/issuer. Privileged actions require server controls and version/idempotency.",
+    "domain_permissions": [
+      "cards.view/cards.manage (target extensions)"
+    ]
+  },
+  {
+    "page": "C05",
+    "method": "GET",
+    "target_path": "/v1/operations",
+    "actual_backend_mapping": null,
+    "domain_authorization": "principal + active owned/granted customer context + environment; anonymous cookie for recovery",
+    "idempotency": "Immutable scoped key/payload on writes; one-effect exact replay",
+    "versioning": "Server-owned expected_version and current policy",
+    "evidence": "tests/customer-lifecycle.test.ts; tests/customer-lifecycle-ui.test.tsx; tests/e2e/customer-lifecycle.spec.ts",
+    "schema_status": "draft \u2014 D4 source shared with C07",
+    "privileged_enforcement": "Only own/granted account operations; stable recent ordering and status semantics, safe references, per-currency exact amounts. UNKNOWN retains status/hold guidance. No invented transactions.",
+    "domain_permissions": [
+      "operations.view (customer target)"
+    ]
+  }
+]

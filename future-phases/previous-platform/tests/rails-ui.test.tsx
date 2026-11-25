@@ -1,0 +1,17 @@
+import {it,expect} from 'vitest';
+import {render,screen} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {QueryClient,QueryClientProvider} from '@tanstack/react-query';
+import {MemoryRouter,Routes,Route} from 'react-router-dom';
+import {http,HttpResponse} from 'msw';
+import {AuthProvider,useAuth} from '../packages/platform/src/auth';
+import {RailList,RailDetail} from '../packages/platform/src/rails';
+import {HttpClient} from '../packages/api/src/http';
+import {identityService} from '../packages/api/src/identity';
+import {operationsService} from '../packages/api/src/operations';
+import {server} from './setup';
+async function login(){const client=new HttpClient('http://localhost');await identityService(client,'ops').login({identifier:'operator@staff.sandbox',challenge:'246810'});return operationsService(client);}
+function mount(id?:string){function Ready(){return useAuth().loading?null:id?<Routes><Route path="/ops/collections/:id" element={<RailDetail kind="collections"/>}/></Routes>:<RailList kind="payouts"/>;}render(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false}}})}><AuthProvider surface="ops" baseUrl="http://localhost"><MemoryRouter initialEntries={[id?`/ops/collections/${id}`:'/ops/payouts']}><Ready/></MemoryRouter></AuthProvider></QueryClientProvider>);}
+it('announces loading then an empty payout resource without inventing successful instructions',async()=>{await login();let release!:()=>void;const blocked=new Promise<void>(r=>release=r);server.use(http.get('http://localhost/ops/v1/payouts',async()=>{await blocked;return HttpResponse.json({data:[],page:{as_of:'2026-10-01T08:00:00Z',next_cursor:null,has_more:false}});}));mount();await screen.findByRole('status',{name:'Loading workspace'});expect(screen.queryByRole('table')).not.toBeInTheDocument();release();await screen.findByRole('heading',{name:'No records are available'});});
+it('receipt dependency failure keeps financial evidence visible and reports no false download success',async()=>{const service=await login(),r=(await service.collections({state:'SUCCEEDED'},null,new AbortController().signal)).data[0]!;let count=0;server.use(http.get(`http://localhost/ops/v1/collections/${r.id}/receipt`,()=>{count++;return HttpResponse.json({error:{code:'DEPENDENCY_UNAVAILABLE',message:'Receipt temporarily unavailable',details:{}},request_id:'receipt-outage'},{status:503});}));mount(r.id);await userEvent.click(await screen.findByRole('button',{name:'Download receipt PDF'}));expect(await screen.findByRole('alert')).toHaveTextContent('Receipt temporarily unavailable');expect(screen.getByRole('heading',{name:'Collection detail'})).toBeInTheDocument();expect(screen.getByRole('button',{name:'Download receipt PDF'})).toBeEnabled();expect(count).toBe(1);});
+it('a rate-limited receipt download disables another immediate attempt',async()=>{const service=await login(),r=(await service.collections({state:'SUCCEEDED'},null,new AbortController().signal)).data[0]!;server.use(http.get(`http://localhost/ops/v1/collections/${r.id}/receipt`,()=>HttpResponse.json({error:{code:'RATE_LIMITED',message:'Receipt requests limited',details:{}},request_id:'rate'},{status:429,headers:{'Retry-After':'30'}})));mount(r.id);await userEvent.click(await screen.findByRole('button',{name:'Download receipt PDF'}));await screen.findByText('Receipt retry available in 30 seconds.');expect(screen.getByRole('button',{name:'Download receipt PDF'})).toBeDisabled();});

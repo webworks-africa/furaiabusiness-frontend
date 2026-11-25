@@ -1,0 +1,20 @@
+import {useEffect,useState,useRef} from 'react';
+import {useQuery} from '@tanstack/react-query';
+import type {SessionFilters,SessionExportRequest,StepUpGrant,ExportJob} from '../../contracts/src';
+import {Button} from '../../ui/src/button';
+import {useAuth} from './auth';
+import {StepUpDialog} from './step-up';
+import {ApiError} from '../../api/src/http';
+export function ExportControl({filters,asOf}:{filters:SessionFilters;asOf:string}){
+ const {session,exports:service,surface,generation}=useAuth();
+ const [request,setRequest]=useState<{payload:SessionExportRequest;key:string}|null>(null),[job,setJob]=useState<ExportJob|null>(null),[dialog,setDialog]=useState(false),[error,setError]=useState(''),[busy,setBusy]=useState(false),[waitUntil,setWaitUntil]=useState(0),[now,setNow]=useState(Date.now());
+ const active=useRef(true);useEffect(()=>()=>{active.current=false;},[]);
+ useEffect(()=>{const timer=setInterval(()=>setNow(Date.now()),1000);return ()=>clearInterval(timer);},[]);
+ const status=useQuery({queryKey:[surface,'export',session?.principal_id,session?.active_scope_id,session?.environment,generation,job?.id],queryFn:({signal})=>service.status(job!.id,signal),enabled:!!job,refetchInterval:query=>['QUEUED','RUNNING'].includes(query.state.data?.state??job?.state??'')?1000:false,refetchIntervalInBackground:false,retry:false});
+ const current=status.data??job;
+ if(!session||!session.capabilities.includes('security.sessions.export'))return <p className="metadata">Export permission is not granted.</p>;
+ function prepare(){setError('');if(!request)setRequest({payload:{type:'session_history',format:'csv',filters:{...filters},scope_id:session!.active_scope_id,environment:session!.environment,as_of:asOf},key:crypto.randomUUID()});setDialog(true);}
+ async function create(grant:StepUpGrant){if(!request)return;try{const created=await service.create(request.payload,request.key,grant);if(active.current){setJob(created);setDialog(false);setError('');setRequest(null);}}catch(e){if(e instanceof ApiError && e.status===429){setDialog(false);setWaitUntil(Date.now()+Number(e.retryAfter??60)*1000);}if(e instanceof ApiError && (e.status===409||e.status===422)){setRequest(null);setDialog(false);}if(active.current)setError(e instanceof Error?e.message:'Export unavailable.');throw e;}}
+ async function download(){if(!current)return;setBusy(true);setError('');try{const file=await service.download(current.id);if(!active.current)return;const url=URL.createObjectURL(file.blob);const a=document.createElement('a');a.href=url;a.download=file.filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch(e){setError(e instanceof Error?e.message:'Download unavailable.');if(e instanceof ApiError && e.status===410){setJob({...current,state:'EXPIRED',download_route:null});void status.refetch();}}finally{if(active.current)setBusy(false);}}
+ return <section className="export-control" aria-label="Session history export"><div><h2>Session history export</h2><p>CSV of the filtered snapshot. Download access is checked again.</p></div><div className="export-actions"><Button variant="outline" onClick={prepare} disabled={now<waitUntil||!!current&&['QUEUED','RUNNING'].includes(current.state)}>{request?'Retry export':'Generate CSV'}</Button>{current&&<><span className="badge neutral" role="status">Export: {current.state}</span>{current.state==='READY'&&<Button onClick={()=>{void download();}} disabled={busy}>{busy?'Downloading…':'Download CSV'}</Button>}</>}</div>{current?.failure_message&&<p role="alert" className="field-error">{current.failure_message}</p>}{status.isError&&<p role="alert" className="field-error">{status.error.message}</p>}{error&&<p role="alert" className="field-error">{error}</p>}{now<waitUntil&&<p role="status">Retry available in {Math.ceil((waitUntil-now)/1000)} seconds.</p>}{dialog&&<StepUpDialog capability="security.sessions.export" resourceId="session_history" title="Verify session history export" onCancel={()=>{setDialog(false);if(!error)setRequest(null);}} onVerified={create}/>}</section>;
+}
